@@ -1,3 +1,6 @@
+import json
+import os
+
 import customtkinter as ctk
 from customtkinter import CTk
 
@@ -10,54 +13,70 @@ class GUI(CTk):
         self.__button_padding = {"pady":10, "padx": 10}
         self.__center_window(self)
         self.__default_text = "Wybierz profil"
-        self.__profiles = {}
+        self.__json_filename = "profiles.json"
+        self.__create_profiles_file()
+        self.__profiles = self.__load_profiles_file()
         self.__active_profile = None
         self.__speed = ctk.IntVar()
-
-        # mockup
-        self.__save_profile("rzezba1")
-        self.__save_profile("rzezba2")
-        self.__save_profile("rzezba3")
-        self.__save_profile("rzezba4")
-
         self.__window()
+
+    def __create_profiles_file(self) -> None:
+        if not os.path.exists(self.__json_filename):
+            with open(self.__json_filename, 'w') as file:
+                data = {}
+                json.dump(data, file, indent=4)
+
+    def __load_profiles_file(self) -> None:
+        try:
+            with open(self.__json_filename, 'r') as file:
+                return json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            return {}
+
+    def __update_profiles_file(self) -> None:
+        with open("profiles.json", 'w') as file:
+            file.write(json.dumps(self.__profiles, indent=4))
 
     def __center_window(self, window) -> None:
         screen_width = window.winfo_screenwidth()
         screen_height = window.winfo_screenheight()
 
-        x = (screen_width - window.winfo_reqwidth()) // 2 - 150
+        x = (screen_width - window.winfo_reqwidth()) // 2 - 100
         y = (screen_height - window.winfo_reqheight()) // 2.25
 
         window.geometry(f"+{x}+{y}")
 
-    def __save_profile_value(self, window) -> None:        
+    def __save_profile_value(self, window) -> None:
         self.__profiles[self.__active_profile] = self.__speed.get()
         self.__close_window(window)
-        print(self.__profiles)
+        self.__update_profiles_file()
 
     def __get_profile_value(self) -> int:
-        print(self.__profiles[self.__active_profile])
         return self.__profiles[self.__active_profile]
 
-    def __save_profile(self, name: str) -> None:        
+    def __save_profile(self, name: str) -> None:
         self.__profiles[name] = 0
 
     def __select_profile(self, name: str) -> None:
         self.__active_profile = name
 
+    def __list_profiles(self) -> list:
+        return sorted(list(self.__profiles.keys()))
+
     def __add_profile(self) -> None:
         value = self.combobox.get()
         self.__active_profile = value
         self.__save_profile(self.__active_profile)
-        self.combobox.configure(values=list(self.__profiles.keys()))
+        self.combobox.configure(values=self.__list_profiles())
         self.__edit_profile()
+        self.__update_profiles_file()
 
-    def __delete_profile(self) -> None:    
+    def __delete_profile(self) -> None:
         value = self.combobox.get()
         del self.__profiles[value]
-        self.combobox.configure(values=list(self.__profiles.keys()))
+        self.combobox.configure(values=self.__list_profiles())
         self.combobox.set(self.__default_text)
+        self.__update_profiles_file()
 
     def __edit_profile(self) -> None:
         edit_window = ctk.CTkToplevel()
@@ -89,7 +108,7 @@ class GUI(CTk):
     def __close_window(self, window: ctk.CTkToplevel) -> None:
         window.destroy()
 
-    def __add_button(self, text: str, func: callable):
+    def __add_button(self, text: str, func: callable) -> None:
         button = ctk.CTkButton(
             master=self,
             text=text,
@@ -100,8 +119,8 @@ class GUI(CTk):
     def __window(self) -> None:
         self.combobox = ctk.CTkComboBox(
             master=self,
-            values=list(self.__profiles.keys()),
-            command=self.__select_profile            
+            values=self.__list_profiles(),
+            command=self.__select_profile
         )
         self.combobox.pack(**self.__button_padding, anchor='center')
         self.combobox.set(self.__default_text)
