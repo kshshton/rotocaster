@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from typing import Optional
 
 import customtkinter as ctk
@@ -40,6 +41,12 @@ class GUI(CTk):
     def __listen_output_speed(self) -> None:
         print(self.__output_speed)
         self.after(ms=100, func=self.__listen_output_speed)
+
+    def __reset_speed_value(self) -> None:
+        if self.__output_speed == 0:
+            return self.__output_speed
+        self.__output_speed -= 1
+        self.after(ms=50, func=self.__reset_speed_value)
 
     def __overwrite_output_speed(self, *args) -> None:
         self.__output_speed = self.__test_speed.get()
@@ -89,9 +96,6 @@ class GUI(CTk):
         self.__profiles[self.__active_profile] = self.__speed.get()
         self.__close_window(window)
         self.__update_profiles_file()
-
-    def __reset_speed_value(self) -> None:
-        self.__output_speed = 0
 
     def __run_profile(self) -> None:
         try:
