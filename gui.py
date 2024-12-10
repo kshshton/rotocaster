@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Optional
 
 import customtkinter as ctk
 from customtkinter import CTk
@@ -16,6 +17,7 @@ class GUI(CTk):
         self.__json_filename = "profiles.json"
         self.__create_profiles_file()
         self.__profiles = self.__load_profiles_file()
+        self.output_speed = None
         self.__active_profile = None
         self.__speed = ctk.IntVar()
         self.__window()
@@ -46,13 +48,38 @@ class GUI(CTk):
 
         window.geometry(f"+{x}+{y}")
 
+    def __get_profile_value(self) -> int:
+        return self.__profiles[self.__active_profile]
+    
     def __save_profile_value(self, window) -> None:
         self.__profiles[self.__active_profile] = self.__speed.get()
         self.__close_window(window)
         self.__update_profiles_file()
+    
+    def __reset_speed_value(self) -> None:
+        self.output_speed = 0
+        print(self.output_speed)
+    
+    def __run_profile(self) -> None:
+        run_window = ctk.CTkToplevel()
+        run_window.geometry("200x100")
+        run_window.title(f"Uruchomiono: {self.__active_profile}")
+        run_window.transient(self)
+        self.__center_window(run_window)
 
-    def __get_profile_value(self) -> int:
-        return self.__profiles[self.__active_profile]
+        self.output_speed = self.__get_profile_value()
+        print(self.output_speed)
+
+        self.stop_button = ctk.CTkButton(
+            master=run_window,
+            text="Zatrzymaj",
+            command=lambda: 
+                self.__close_window(
+                    run_window,
+                    self.__reset_speed_value
+                ),
+        )
+        self.stop_button.place(relx=0.5, rely=0.5, anchor='center')
 
     def __save_profile(self, name: str) -> None:
         self.__profiles[name] = 0
@@ -83,9 +110,7 @@ class GUI(CTk):
         edit_window.geometry("300x200")
         edit_window.title(self.__active_profile)
         edit_window.transient(self)
-
         self.__center_window(edit_window)
-
         self.frame = ctk.CTkFrame(master=edit_window)
         self.frame.pack(pady=20, padx=20, fill="both", expand=True)
 
@@ -105,14 +130,23 @@ class GUI(CTk):
         )
         self.save_button.place(relx=0.5, rely=0.8, anchor='center')
 
-    def __close_window(self, window: ctk.CTkToplevel) -> None:
-        window.destroy()
+    def __close_window(
+            self, 
+            window: ctk.CTkToplevel, 
+            callback: Optional[callable] = None
+        ) -> None:
+        try:
+            callback()
+        except TypeError:
+            pass
+        finally:
+            window.destroy()
 
-    def __add_button(self, text: str, func: callable) -> None:
+    def __add_button(self, text: str, callback: callable) -> None:
         button = ctk.CTkButton(
             master=self,
             text=text,
-            command=func,
+            command=callback,
         )
         button.pack(**self.__button_padding, anchor='center')
 
@@ -127,6 +161,6 @@ class GUI(CTk):
         self.__add_button("Dodaj", self.__add_profile)
         self.__add_button("Usuń", self.__delete_profile)
         self.__add_button("Edytuj", self.__edit_profile)
-        self.__add_button("Uruchom", self.__get_profile_value)
+        self.__add_button("Uruchom", self.__run_profile)
 
         self.mainloop()
