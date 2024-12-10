@@ -9,7 +9,7 @@ from customtkinter import CTk
 class GUI(CTk):
     def __init__(self) -> None:
         super().__init__()
-        self.geometry("300x250")
+        self.geometry("300x300")
         self.title("RotoCaster")
         self.__button_padding = {"pady":10, "padx": 10}
         self.__center_window(self)
@@ -20,13 +20,29 @@ class GUI(CTk):
         self.__output_speed = 0
         self.__active_profile = None
         self.__speed = ctk.IntVar()
-        self.__window()
+        self.__test_speed = ctk.IntVar()
+        self.__test_speed.trace_add('write', self.__overwrite_output_speed)
+        self.combobox = ctk.CTkComboBox(
+            master=self,
+            values=self.__list_profiles(),
+            command=self.__select_profile
+        )
+        self.combobox.pack(**self.__button_padding, anchor='center')
+        self.combobox.set(self.__default_text)
+        self.__add_button("Dodaj", self.__add_profile)
+        self.__add_button("Usuń", self.__delete_profile)
+        self.__add_button("Edytuj", self.__edit_profile)
+        self.__add_button("Uruchom profil", self.__run_profile)
+        self.__add_button("Uruchom tryb testowy", self.__run_test_mode)
         self.__listen_output_speed()
         self.mainloop()
 
     def __listen_output_speed(self) -> None:
         print(self.__output_speed)
         self.after(ms=100, func=self.__listen_output_speed)
+
+    def __overwrite_output_speed(self, *args) -> None:
+        self.__output_speed = self.__test_speed.get()
 
     def __create_profiles_file(self) -> None:
         if not os.path.exists(self.__json_filename):
@@ -78,24 +94,59 @@ class GUI(CTk):
         self.__output_speed = 0
 
     def __run_profile(self) -> None:
-        run_window = ctk.CTkToplevel()
-        run_window.geometry("200x100")
-        run_window.title(f"Uruchomiono: {self.__active_profile}")
-        run_window.transient(self)
-        self.__center_window(window=run_window)
+        try:
+            assert self.__active_profile
+            run_window = ctk.CTkToplevel()
+            run_window.geometry("200x100")
+            run_window.title(f"Uruchomiono: {self.__active_profile}")
+            run_window.transient(self)
+            self.__center_window(window=run_window)
 
-        self.__output_speed = self.__get_profile_value()
+            self.__output_speed = self.__get_profile_value()
+
+            self.stop_button = ctk.CTkButton(
+                master=run_window,
+                text="Zatrzymaj",
+                command=lambda:
+                    self.__close_window(
+                        window=run_window,
+                        callback=self.__reset_speed_value
+                    ),
+            )
+            self.stop_button.place(relx=0.5, rely=0.5, anchor='center')
+        except:
+            pass
+
+    def __run_test_mode(self) -> None:
+        test_window = ctk.CTkToplevel()
+        test_window.geometry("300x200")
+        test_window.title("Uruchomiono: tryb testowy")
+        test_window.transient(self)
+        self.__center_window(test_window)
+
+        frame = ctk.CTkFrame(master=test_window)
+        frame.pack(pady=20, padx=20, fill="both", expand=True)
+
+        self.__test_speed.set(0)
+
+        slider = ctk.CTkSlider(master=frame, from_=0, to=100, variable=self.__test_speed)
+        slider.place(relx=0.5, rely=0.5, anchor='center')
+
+        speed_box = ctk.CTkEntry(master=frame, textvariable=self.__test_speed)
+        speed_box.place(relx=0.5, rely=0.25, anchor='center')
 
         self.stop_button = ctk.CTkButton(
-            master=run_window,
+            master=frame,
             text="Zatrzymaj",
             command=lambda:
                 self.__close_window(
-                    window=run_window,
+                    window=test_window,
                     callback=self.__reset_speed_value
                 ),
         )
-        self.stop_button.place(relx=0.5, rely=0.5, anchor='center')
+        self.stop_button.place(relx=0.5, rely=0.8, anchor='center')
+
+        self.__output_speed = self.__test_speed.get()
 
     def __save_profile(self, name: str) -> None:
         self.__profiles[name] = 0
@@ -127,20 +178,21 @@ class GUI(CTk):
         edit_window.title(self.__active_profile)
         edit_window.transient(self)
         self.__center_window(edit_window)
-        self.frame = ctk.CTkFrame(master=edit_window)
-        self.frame.pack(pady=20, padx=20, fill="both", expand=True)
+
+        frame = ctk.CTkFrame(master=edit_window)
+        frame.pack(pady=20, padx=20, fill="both", expand=True)
 
         profile_value = self.__profiles[self.__active_profile]
 
-        self.slider = ctk.CTkSlider(master=self.frame, from_=0, to=100, variable=self.__speed)
-        self.slider.place(relx=0.5, rely=0.5, anchor='center')
-        self.slider.set(profile_value)
+        slider = ctk.CTkSlider(master=frame, from_=0, to=100, variable=self.__speed)
+        slider.place(relx=0.5, rely=0.5, anchor='center')
+        slider.set(profile_value)
 
-        self.speed_box = ctk.CTkEntry(master=self.frame, textvariable=self.__speed)
-        self.speed_box.place(relx=0.5, rely=0.25, anchor='center')
+        speed_box = ctk.CTkEntry(master=frame, textvariable=self.__speed)
+        speed_box.place(relx=0.5, rely=0.25, anchor='center')
 
         self.save_button = ctk.CTkButton(
-            master=self.frame,
+            master=frame,
             text="Zapisz",
             command=lambda: self.__save_profile_value(window=edit_window),
         )
@@ -153,19 +205,6 @@ class GUI(CTk):
             command=callback,
         )
         button.pack(**self.__button_padding, anchor='center')
-
-    def __window(self) -> None:
-        self.combobox = ctk.CTkComboBox(
-            master=self,
-            values=self.__list_profiles(),
-            command=self.__select_profile
-        )
-        self.combobox.pack(**self.__button_padding, anchor='center')
-        self.combobox.set(self.__default_text)
-        self.__add_button("Dodaj", self.__add_profile)
-        self.__add_button("Usuń", self.__delete_profile)
-        self.__add_button("Edytuj", self.__edit_profile)
-        self.__add_button("Uruchom", self.__run_profile)
 
 
 if __name__ == "__main__":
