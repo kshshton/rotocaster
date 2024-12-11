@@ -13,7 +13,6 @@ class GUI(CTk):
         self.title("RotoCaster")
         self.__button_padding = {"pady":10, "padx": 10}
         self.__center_window(self)
-        self.__default_text = "Wybierz profil"
         self.__json_filename = "profiles.json"
         self.__create_profiles_file()
         self.__profiles = self.__load_profiles_file()
@@ -59,7 +58,7 @@ class GUI(CTk):
             command=self.__select_profile
         )
         self.combobox.pack(**self.__button_padding, anchor="center")
-        self.combobox.set(self.__default_text)
+        self.combobox.set("")
         self.__add_button("Dodaj", self.__add_profile)
         self.__add_button("Usuń", self.__delete_profile)
         self.__add_button("Edytuj", self.__edit_profile)
@@ -172,7 +171,7 @@ class GUI(CTk):
                     ),
             )
             run_stop_button.place(relx=0.5, rely=0.5, anchor="center")
-        except:
+        except AssertionError:
             pass
 
     def __run_test_mode(self) -> None:
@@ -229,9 +228,9 @@ class GUI(CTk):
             value = self.combobox.get()
             del self.__profiles[value]
             self.combobox.configure(values=self.__list_profiles())
-            self.combobox.set(self.__default_text)
+            self.combobox.set("")
             self.__update_profiles_file()
-        except:
+        except AssertionError:
             pass
 
     def __edit_profile(self) -> None:
@@ -261,7 +260,7 @@ class GUI(CTk):
                 command=lambda: self.__save_profile_value(window=edit_window),
             )
             profile_save_button.place(relx=0.5, rely=0.8, anchor="center")
-        except:
+        except AssertionError:
             pass
 
     def __add_button(self, text: str, callback: callable) -> None:
