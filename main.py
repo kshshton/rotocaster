@@ -22,7 +22,13 @@ class GUI(CTk):
         self.__active_operator = None
         self.__profile_speed = IntVar()
         self.__profile_speed_text = StringVar()
-        self.__profile_speed.trace_add("write", self.__overwrite_profile_speed)
+        self.__profile_speed.trace_add(
+            "write",
+            lambda *args: self.__text_to_speed(
+                text=self.__profile_speed_text,
+                speed=self.__profile_speed,
+            )
+        )
         self.__profile_speed_text.trace_add(
             "write",
             lambda *args: self.__slider_validation(
@@ -32,7 +38,13 @@ class GUI(CTk):
         )
         self.__test_speed = IntVar()
         self.__test_speed_text = StringVar()
-        self.__test_speed.trace_add("write", self.__overwrite_test_speed)
+        self.__test_speed.trace_add(
+            "write",
+            lambda *args: self.__text_to_speed(
+                text=self.__test_speed_text,
+                speed=self.__test_speed,
+            )
+        )
         self.__test_speed_text.trace_add(
             "write",
             lambda *args: self.__slider_validation(
@@ -40,7 +52,7 @@ class GUI(CTk):
                 output=self.__test_speed,
             )
         )
-        self.__test_speed.trace_add("write", self.__overwrite_output_speed)
+        self.__test_speed.trace_add("write", self.__test_to_output_speed)
         self.combobox = CTkComboBox(
             master=self,
             values=self.__list_profiles(),
@@ -84,14 +96,14 @@ class GUI(CTk):
         except:
             output.set(0)
 
-    def __overwrite_output_speed(self, *args: any) -> None:
+    def __test_to_output_speed(self, *args: any) -> None:
         self.__output_speed = self.__test_speed.get()
 
-    def __overwrite_test_speed(self, *args: any) -> None:
-        self.__test_speed_text.set(str(self.__test_speed.get()))
-
-    def __overwrite_profile_speed(self, *args: any) -> None:
-        self.__profile_speed_text.set(str(self.__profile_speed.get()))
+    def __text_to_speed(self, text: StringVar, speed: IntVar) -> None:
+        try:
+            text.set(str(speed.get()))
+        except:
+            speed.set(0)
 
     def __create_profiles_file(self) -> None:
         if not os.path.exists(self.__json_filename):
