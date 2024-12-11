@@ -1,10 +1,9 @@
 import json
 import os
-import time
 from typing import Optional
 
-import customtkinter as ctk
-from customtkinter import CTk
+from customtkinter import (CTk, CTkButton, CTkComboBox, CTkEntry, CTkFrame,
+                           CTkSlider, CTkToplevel, IntVar, StringVar)
 
 
 class GUI(CTk):
@@ -20,15 +19,34 @@ class GUI(CTk):
         self.__profiles = self.__load_profiles_file()
         self.__output_speed = 0
         self.__active_profile = None
-        self.__speed = ctk.IntVar()
-        self.__test_speed = ctk.IntVar()
-        self.__test_speed.trace_add('write', self.__overwrite_output_speed)
-        self.combobox = ctk.CTkComboBox(
+        self.__active_operator = None
+        self.__profile_speed = IntVar()
+        self.__profile_speed_text = StringVar()
+        self.__profile_speed.trace_add("write", self.__overwrite_profile_speed)
+        self.__profile_speed_text.trace_add(
+            "write",
+            lambda *args: self.__slider_validation(
+                input=self.__profile_speed_text,
+                output=self.__profile_speed,
+            )
+        )
+        self.__test_speed = IntVar()
+        self.__test_speed_text = StringVar()
+        self.__test_speed.trace_add("write", self.__overwrite_test_speed)
+        self.__test_speed_text.trace_add(
+            "write",
+            lambda *args: self.__slider_validation(
+                input=self.__test_speed_text,
+                output=self.__test_speed,
+            )
+        )
+        self.__test_speed.trace_add("write", self.__overwrite_output_speed)
+        self.combobox = CTkComboBox(
             master=self,
             values=self.__list_profiles(),
             command=self.__select_profile
         )
-        self.combobox.pack(**self.__button_padding, anchor='center')
+        self.combobox.pack(**self.__button_padding, anchor="center")
         self.combobox.set(self.__default_text)
         self.__add_button("Dodaj", self.__add_profile)
         self.__add_button("Usuń", self.__delete_profile)
@@ -43,29 +61,53 @@ class GUI(CTk):
         self.after(ms=100, func=self.__listen_output_speed)
 
     def __reset_speed_value(self) -> None:
-        if self.__output_speed == 0:
-            return self.__output_speed
-        self.__output_speed -= 1
-        self.after(ms=50, func=self.__reset_speed_value)
+        if self.__active_operator == "decrement":
+            if self.__output_speed == 0:
+                return self.__output_speed
+            self.__output_speed -= 1
+            self.after(ms=50, func=self.__reset_speed_value)
 
-    def __overwrite_output_speed(self, *args) -> None:
+    def __reach_current_profile_speed(self) -> None:
+        if self.__active_operator == "increment":
+            if self.__output_speed == self.__get_profile_value():
+                return self.__output_speed + 1
+            self.__output_speed += 1
+            self.after(ms=50, func=self.__reach_current_profile_speed)
+
+    def __slider_validation(self, input: StringVar, output: IntVar) -> None:
+        try:
+            value = int(input.get())
+            if value > 100:
+                output.set(100)
+            else:
+                output.set(value)
+        except:
+            output.set(0)
+
+    def __overwrite_output_speed(self, *args: any) -> None:
         self.__output_speed = self.__test_speed.get()
+
+    def __overwrite_test_speed(self, *args: any) -> None:
+        self.__test_speed_text.set(str(self.__test_speed.get()))
+
+    def __overwrite_profile_speed(self, *args: any) -> None:
+        self.__profile_speed_text.set(str(self.__profile_speed.get()))
 
     def __create_profiles_file(self) -> None:
         if not os.path.exists(self.__json_filename):
-            with open(self.__json_filename, 'w') as file:
+            with open(self.__json_filename, "w") as file:
                 data = {}
                 json.dump(data, file, indent=4)
 
     def __load_profiles_file(self) -> None:
         try:
-            with open(self.__json_filename, 'r') as file:
+            with open(self.__json_filename, "r") as file:
                 return json.load(file)
         except (FileNotFoundError, json.JSONDecodeError):
             return {}
 
     def __update_profiles_file(self) -> None:
-        with open("profiles.json", 'w') as file:
+        with open("profiles.json", "w") as file:
             file.write(json.dumps(self.__profiles, indent=4))
 
     def __center_window(self, window) -> None:
@@ -82,9 +124,10 @@ class GUI(CTk):
 
     def __close_window(
             self,
-            window: ctk.CTkToplevel,
+            window: CTkToplevel,
             callback: Optional[callable] = None
         ) -> None:
+        self.__active_operator = "decrement"
         try:
             callback()
         except TypeError:
@@ -92,23 +135,22 @@ class GUI(CTk):
         finally:
             window.destroy()
 
-    def __save_profile_value(self, window) -> None:
-        self.__profiles[self.__active_profile] = self.__speed.get()
+    def __save_profile_value(self, window: CTkToplevel) -> None:
+        self.__profiles[self.__active_profile] = self.__profile_speed.get()
         self.__close_window(window)
         self.__update_profiles_file()
 
     def __run_profile(self) -> None:
         try:
             assert self.__active_profile
-            run_window = ctk.CTkToplevel()
-            run_window.geometry("200x100")
+            run_window = CTkToplevel()
+            run_window.geometry("300x100")
             run_window.title(f"Uruchomiono: {self.__active_profile}")
             run_window.transient(self)
             self.__center_window(window=run_window)
-
-            self.__output_speed = self.__get_profile_value()
-
-            self.stop_button = ctk.CTkButton(
+            self.__active_operator = "increment"
+            self.__reach_current_profile_speed()
+            run_stop_button = CTkButton(
                 master=run_window,
                 text="Zatrzymaj",
                 command=lambda:
@@ -117,30 +159,30 @@ class GUI(CTk):
                         callback=self.__reset_speed_value
                     ),
             )
-            self.stop_button.place(relx=0.5, rely=0.5, anchor='center')
+            run_stop_button.place(relx=0.5, rely=0.5, anchor="center")
         except:
             pass
 
     def __run_test_mode(self) -> None:
-        test_window = ctk.CTkToplevel()
+        test_window = CTkToplevel()
         test_window.geometry("300x200")
         test_window.title("Uruchomiono: tryb testowy")
         test_window.transient(self)
         self.__center_window(test_window)
 
-        frame = ctk.CTkFrame(master=test_window)
-        frame.pack(pady=20, padx=20, fill="both", expand=True)
+        test_frame = CTkFrame(master=test_window)
+        test_frame.pack(pady=20, padx=20, fill="both", expand=True)
 
         self.__test_speed.set(0)
 
-        slider = ctk.CTkSlider(master=frame, from_=0, to=100, variable=self.__test_speed)
-        slider.place(relx=0.5, rely=0.5, anchor='center')
+        test_slider = CTkSlider(master=test_frame, from_=0, to=100, variable=self.__test_speed)
+        test_slider.place(relx=0.5, rely=0.5, anchor="center")
 
-        speed_box = ctk.CTkEntry(master=frame, textvariable=self.__test_speed)
-        speed_box.place(relx=0.5, rely=0.25, anchor='center')
+        test_speed_box = CTkEntry(master=test_frame, textvariable=self.__test_speed_text)
+        test_speed_box.place(relx=0.5, rely=0.25, anchor="center")
 
-        self.stop_button = ctk.CTkButton(
-            master=frame,
+        test_stop_button = CTkButton(
+            master=test_frame,
             text="Zatrzymaj",
             command=lambda:
                 self.__close_window(
@@ -148,7 +190,7 @@ class GUI(CTk):
                     callback=self.__reset_speed_value
                 ),
         )
-        self.stop_button.place(relx=0.5, rely=0.8, anchor='center')
+        test_stop_button.place(relx=0.5, rely=0.8, anchor="center")
 
         self.__output_speed = self.__test_speed.get()
 
@@ -170,45 +212,53 @@ class GUI(CTk):
         self.__update_profiles_file()
 
     def __delete_profile(self) -> None:
-        value = self.combobox.get()
-        del self.__profiles[value]
-        self.combobox.configure(values=self.__list_profiles())
-        self.combobox.set(self.__default_text)
-        self.__update_profiles_file()
+        try:
+            assert self.__active_profile
+            value = self.combobox.get()
+            del self.__profiles[value]
+            self.combobox.configure(values=self.__list_profiles())
+            self.combobox.set(self.__default_text)
+            self.__update_profiles_file()
+        except:
+            pass
 
     def __edit_profile(self) -> None:
-        edit_window = ctk.CTkToplevel()
-        edit_window.geometry("300x200")
-        edit_window.title(self.__active_profile)
-        edit_window.transient(self)
-        self.__center_window(edit_window)
+        try:
+            assert self.__active_profile
+            edit_window = CTkToplevel()
+            edit_window.geometry("300x200")
+            edit_window.title(self.__active_profile)
+            edit_window.transient(self)
+            self.__center_window(edit_window)
 
-        frame = ctk.CTkFrame(master=edit_window)
-        frame.pack(pady=20, padx=20, fill="both", expand=True)
+            profile_frame = CTkFrame(master=edit_window)
+            profile_frame.pack(pady=20, padx=20, fill="both", expand=True)
 
-        profile_value = self.__profiles[self.__active_profile]
+            profile_value = self.__profiles[self.__active_profile]
 
-        slider = ctk.CTkSlider(master=frame, from_=0, to=100, variable=self.__speed)
-        slider.place(relx=0.5, rely=0.5, anchor='center')
-        slider.set(profile_value)
+            profile_slider = CTkSlider(master=profile_frame, from_=0, to=100, variable=self.__profile_speed)
+            profile_slider.place(relx=0.5, rely=0.5, anchor="center")
+            profile_slider.set(profile_value)
 
-        speed_box = ctk.CTkEntry(master=frame, textvariable=self.__speed)
-        speed_box.place(relx=0.5, rely=0.25, anchor='center')
+            profile_speed_box = CTkEntry(master=profile_frame, textvariable=self.__profile_speed_text)
+            profile_speed_box.place(relx=0.5, rely=0.25, anchor="center")
 
-        self.save_button = ctk.CTkButton(
-            master=frame,
-            text="Zapisz",
-            command=lambda: self.__save_profile_value(window=edit_window),
-        )
-        self.save_button.place(relx=0.5, rely=0.8, anchor='center')
+            profile_save_button = CTkButton(
+                master=profile_frame,
+                text="Zapisz",
+                command=lambda: self.__save_profile_value(window=edit_window),
+            )
+            profile_save_button.place(relx=0.5, rely=0.8, anchor="center")
+        except:
+            pass
 
     def __add_button(self, text: str, callback: callable) -> None:
-        button = ctk.CTkButton(
+        button = CTkButton(
             master=self,
             text=text,
             command=callback,
         )
-        button.pack(**self.__button_padding, anchor='center')
+        button.pack(**self.__button_padding, anchor="center")
 
 
 if __name__ == "__main__":
