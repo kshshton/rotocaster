@@ -23,9 +23,9 @@ class GUI(CTk):
         self.__profile_speed_text = StringVar()
         self.__profile_speed.trace_add(
             "write",
-            lambda *args: self.__text_to_speed(
-                text=self.__profile_speed_text,
+            lambda *args: self.__speed_to_text(
                 speed=self.__profile_speed,
+                text=self.__profile_speed_text,
             )
         )
         self.__profile_speed_text.trace_add(
@@ -39,9 +39,9 @@ class GUI(CTk):
         self.__test_speed_text = StringVar()
         self.__test_speed.trace_add(
             "write",
-            lambda *args: self.__text_to_speed(
-                text=self.__test_speed_text,
+            lambda *args: self.__speed_to_text(
                 speed=self.__test_speed,
+                text=self.__test_speed_text,
             )
         )
         self.__test_speed_text.trace_add(
@@ -98,7 +98,7 @@ class GUI(CTk):
     def __test_to_output_speed(self, *args: any) -> None:
         self.__output_speed = self.__test_speed.get()
 
-    def __text_to_speed(self, text: StringVar, speed: IntVar) -> None:
+    def __speed_to_text(self, speed: IntVar, text: StringVar) -> None:
         try:
             text.set(str(speed.get()))
         except:
@@ -158,6 +158,7 @@ class GUI(CTk):
             run_window.geometry("300x100")
             run_window.title(f"Uruchomiono: {self.__active_profile}")
             run_window.transient(self)
+            run_window.overrideredirect(True)
             self.__center_window(window=run_window)
             self.__active_operator = "increment"
             self.__reach_current_profile_speed()
