@@ -19,51 +19,35 @@ class GUI(CTk):
         self.__output_speed = 0
         self.__active_profile = None
         self.__active_operator = None
-        self.__profile_speed = IntVar()
-        self.__profile_speed_text = StringVar()
-        self.__profile_speed.trace_add(
+        self.__manual_speed = IntVar()
+        self.__manual_speed_text = StringVar()
+        self.__manual_speed.trace_add(
             "write",
-            lambda *args: self.__speed_to_text(
-                speed=self.__profile_speed,
-                text=self.__profile_speed_text,
+            lambda *args: self.__text_to_speed(
+                text=self.__manual_speed_text,
+                speed=self.__manual_speed,
             )
         )
-        self.__profile_speed_text.trace_add(
-            "write",
-            lambda *args: self.__slider_validation(
-                input=self.__profile_speed_text,
-                output=self.__profile_speed,
-            )
-        )
-        self.__test_speed = IntVar()
-        self.__test_speed_text = StringVar()
-        self.__test_speed.trace_add(
-            "write",
-            lambda *args: self.__speed_to_text(
-                speed=self.__test_speed,
-                text=self.__test_speed_text,
-            )
-        )
-        self.__test_speed_text.trace_add(
+        self.__manual_speed_text.trace_add(
             "write",
             lambda *args: self.__slider_validation(
-                input=self.__test_speed_text,
-                output=self.__test_speed,
+                input=self.__manual_speed_text,
+                output=self.__manual_speed,
             )
         )
-        self.__test_speed.trace_add("write", self.__test_to_output_speed)
+        self.__manual_speed.trace_add("write", self.__manual_to_output_speed)
         self.combobox = CTkComboBox(
             master=self,
             values=self.__list_profiles(),
             command=self.__select_profile
         )
         self.combobox.pack(**self.__button_padding, anchor="center")
-        self.combobox.set("")
+        self.combobox.set(self.__first_profile())
+        self.__add_button("Edytuj", self.__edit_profile)
         self.__add_button("Dodaj", self.__add_profile)
         self.__add_button("Usuń", self.__delete_profile)
-        self.__add_button("Edytuj", self.__edit_profile)
         self.__add_button("Uruchom profil", self.__run_profile)
-        self.__add_button("Uruchom tryb testowy", self.__run_test_mode)
+        self.__add_button("Uruchom tryb ręczny", self.__run_manual_mode)
         self.__listen_output_speed()
         self.mainloop()
 
@@ -92,17 +76,17 @@ class GUI(CTk):
                 output.set(100)
             else:
                 output.set(value)
-        except:
+        except ValueError:
             output.set(0)
 
-    def __test_to_output_speed(self, *args: any) -> None:
-        self.__output_speed = self.__test_speed.get()
-
-    def __speed_to_text(self, speed: IntVar, text: StringVar) -> None:
+    def __text_to_speed(self, text: StringVar, speed: IntVar) -> None:
         try:
             text.set(str(speed.get()))
-        except:
+        except ValueError:
             speed.set(0)
+
+    def __manual_to_output_speed(self, *args: any) -> None:
+        self.__output_speed = self.__manual_speed.get()
 
     def __create_profiles_file(self) -> None:
         if not os.path.exists(self.__json_filename):
@@ -152,59 +136,55 @@ class GUI(CTk):
         self.__update_profiles_file()
 
     def __run_profile(self) -> None:
-        try:
-            assert self.__active_profile
-            run_window = CTkToplevel()
-            run_window.geometry("300x100")
-            run_window.title(f"Uruchomiono: {self.__active_profile}")
-            run_window.transient(self)
-            run_window.overrideredirect(True)
-            self.__center_window(window=run_window)
-            self.__active_operator = "increment"
-            self.__reach_current_profile_speed()
-            run_stop_button = CTkButton(
-                master=run_window,
-                text="Zatrzymaj",
-                command=lambda:
-                    self.__close_window(
-                        window=run_window,
-                        callback=self.__reset_speed_value
-                    ),
-            )
-            run_stop_button.place(relx=0.5, rely=0.5, anchor="center")
-        except AssertionError:
-            pass
-
-    def __run_test_mode(self) -> None:
-        test_window = CTkToplevel()
-        test_window.geometry("300x200")
-        test_window.title("Uruchomiono: tryb testowy")
-        test_window.transient(self)
-        self.__center_window(test_window)
-
-        test_frame = CTkFrame(master=test_window)
-        test_frame.pack(pady=20, padx=20, fill="both", expand=True)
-
-        self.__test_speed.set(0)
-
-        test_slider = CTkSlider(master=test_frame, from_=0, to=100, variable=self.__test_speed)
-        test_slider.place(relx=0.5, rely=0.5, anchor="center")
-
-        test_speed_box = CTkEntry(master=test_frame, textvariable=self.__test_speed_text)
-        test_speed_box.place(relx=0.5, rely=0.25, anchor="center")
-
-        test_stop_button = CTkButton(
-            master=test_frame,
+        assert self.__active_profile
+        run_window = CTkToplevel()
+        run_window.geometry("300x100")
+        run_window.title(f"Uruchomiono: {self.__active_profile}")
+        run_window.transient(self)
+        self.__center_window(window=run_window)
+        self.__active_operator = "increment"
+        self.__reach_current_profile_speed()
+        run_stop_button = CTkButton(
+            master=run_window,
             text="Zatrzymaj",
             command=lambda:
                 self.__close_window(
-                    window=test_window,
+                    window=run_window,
                     callback=self.__reset_speed_value
                 ),
         )
-        test_stop_button.place(relx=0.5, rely=0.8, anchor="center")
+        run_stop_button.place(relx=0.5, rely=0.5, anchor="center")
 
-        self.__output_speed = self.__test_speed.get()
+    def __run_manual_mode(self) -> None:
+        manual_window = CTkToplevel()
+        manual_window.geometry("300x200")
+        manual_window.title("Uruchomiono: tryb ręczny")
+        manual_window.transient(self)
+        self.__center_window(manual_window)
+
+        manual_frame = CTkFrame(master=manual_window)
+        manual_frame.pack(pady=20, padx=20, fill="both", expand=True)
+
+        self.__manual_speed.set(0)
+
+        manual_slider = CTkSlider(master=manual_frame, from_=0, to=100, variable=self.__manual_speed)
+        manual_slider.place(relx=0.5, rely=0.5, anchor="center")
+
+        manual_speed_box = CTkEntry(master=manual_frame, textvariable=self.__manual_speed_text)
+        manual_speed_box.place(relx=0.5, rely=0.25, anchor="center")
+
+        manual_stop_button = CTkButton(
+            master=manual_frame,
+            text="Zatrzymaj",
+            command=lambda:
+                self.__close_window(
+                    window=manual_window,
+                    callback=self.__reset_speed_value
+                ),
+        )
+        manual_stop_button.place(relx=0.5, rely=0.8, anchor="center")
+
+        self.__output_speed = self.__manual_speed.get()
 
     def __save_profile(self, name: str) -> None:
         self.__profiles[name] = 0
@@ -213,23 +193,38 @@ class GUI(CTk):
         self.__active_profile = name
 
     def __list_profiles(self) -> list:
-        return sorted(list(self.__profiles.keys()))
+        profiles = list(self.__profiles.keys())
+        if len(profiles) > 1 and "" in profiles:
+            del self.__profiles[""]
+        return sorted(profiles)
+    
+    def __first_profile(self) -> str:
+        profiles = self.__list_profiles()
+        first_profile = next(iter(profiles), "")
+        self.__active_profile = first_profile
+        return first_profile
 
     def __add_profile(self) -> None:
-        value = self.combobox.get()
-        self.__active_profile = value
-        self.__save_profile(self.__active_profile)
-        self.combobox.configure(values=self.__list_profiles())
-        self.__edit_profile()
-        self.__update_profiles_file()
+        try:
+            value = self.combobox.get()
+            assert value not in self.__list_profiles()
+            self.__active_profile = value
+            self.__save_profile(self.__active_profile)
+            self.combobox.configure(values=self.__list_profiles())
+            self.__edit_profile()
+            self.__update_profiles_file()
+        except AssertionError:
+            pass
 
     def __delete_profile(self) -> None:
         try:
             assert self.__active_profile
             value = self.combobox.get()
+            if len(self.__list_profiles()) == 1:
+                self.combobox.set("")
             del self.__profiles[value]
             self.combobox.configure(values=self.__list_profiles())
-            self.combobox.set("")
+            self.combobox.set(self.__first_profile())
             self.__update_profiles_file()
         except AssertionError:
             pass
@@ -237,6 +232,22 @@ class GUI(CTk):
     def __edit_profile(self) -> None:
         try:
             assert self.__active_profile
+            self.__profile_speed = IntVar()
+            self.__profile_speed_text = StringVar()
+            self.__profile_speed.trace_add(
+                "write",
+                lambda *args: self.__text_to_speed(
+                    text=self.__profile_speed_text,
+                    speed=self.__profile_speed,
+                )
+            )
+            self.__profile_speed_text.trace_add(
+                "write",
+                lambda *args: self.__slider_validation(
+                    input=self.__profile_speed_text,
+                    output=self.__profile_speed,
+                )
+            )
             edit_window = CTkToplevel()
             edit_window.geometry("300x200")
             edit_window.title(self.__active_profile)
