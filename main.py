@@ -19,23 +19,6 @@ class GUI(CTk):
         self.__output_speed = 0
         self.__active_profile = None
         self.__active_operator = None
-        self.__manual_speed = IntVar()
-        self.__manual_speed_text = StringVar()
-        self.__manual_speed.trace_add(
-            "write",
-            lambda *args: self.__text_to_speed(
-                text=self.__manual_speed_text,
-                speed=self.__manual_speed,
-            )
-        )
-        self.__manual_speed_text.trace_add(
-            "write",
-            lambda *args: self.__slider_validation(
-                input=self.__manual_speed_text,
-                output=self.__manual_speed,
-            )
-        )
-        self.__manual_speed.trace_add("write", self.__manual_to_output_speed)
         self.combobox = CTkComboBox(
             master=self,
             values=self.__list_profiles(),
@@ -155,7 +138,7 @@ class GUI(CTk):
         )
         run_stop_button.place(relx=0.5, rely=0.5, anchor="center")
 
-    def __run_manual_mode(self) -> None:
+    def __run_manual_mode(self) -> None:        
         manual_window = CTkToplevel()
         manual_window.geometry("300x200")
         manual_window.title("Uruchomiono: tryb ręczny")
@@ -165,6 +148,23 @@ class GUI(CTk):
         manual_frame = CTkFrame(master=manual_window)
         manual_frame.pack(pady=20, padx=20, fill="both", expand=True)
 
+        self.__manual_speed = IntVar()
+        self.__manual_speed_text = StringVar()
+        self.__manual_speed.trace_add(
+            "write",
+            lambda *args: self.__text_to_speed(
+                text=self.__manual_speed_text,
+                speed=self.__manual_speed,
+            )
+        )
+        self.__manual_speed_text.trace_add(
+            "write",
+            lambda *args: self.__slider_validation(
+                input=self.__manual_speed_text,
+                output=self.__manual_speed,
+            )
+        )
+        self.__manual_speed.trace_add("write", self.__manual_to_output_speed)
         self.__manual_speed.set(0)
 
         manual_slider = CTkSlider(master=manual_frame, from_=0, to=100, variable=self.__manual_speed)
@@ -231,7 +231,16 @@ class GUI(CTk):
 
     def __edit_profile(self) -> None:
         try:
-            assert self.__active_profile
+            assert self.__active_profile            
+            edit_window = CTkToplevel()
+            edit_window.geometry("300x200")
+            edit_window.title(self.__active_profile)
+            edit_window.transient(self)
+            self.__center_window(edit_window)
+
+            profile_frame = CTkFrame(master=edit_window)
+            profile_frame.pack(pady=20, padx=20, fill="both", expand=True)
+
             self.__profile_speed = IntVar()
             self.__profile_speed_text = StringVar()
             self.__profile_speed.trace_add(
@@ -248,15 +257,6 @@ class GUI(CTk):
                     output=self.__profile_speed,
                 )
             )
-            edit_window = CTkToplevel()
-            edit_window.geometry("300x200")
-            edit_window.title(self.__active_profile)
-            edit_window.transient(self)
-            self.__center_window(edit_window)
-
-            profile_frame = CTkFrame(master=edit_window)
-            profile_frame.pack(pady=20, padx=20, fill="both", expand=True)
-
             profile_value = self.__profiles[self.__active_profile]
 
             profile_slider = CTkSlider(master=profile_frame, from_=0, to=100, variable=self.__profile_speed)
