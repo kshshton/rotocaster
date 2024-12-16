@@ -5,17 +5,22 @@ from typing import Optional
 from customtkinter import (CTk, CTkButton, CTkComboBox, CTkEntry, CTkFrame,
                            CTkSlider, CTkToplevel, IntVar, StringVar)
 
+from custom_components.custom_button import CustomButton
+from custom_components.custom_frame import CustomFrame
+from custom_components.custom_top_level import CustomTopLevel
+from profiles_file import ProfilesFile
+from utils import Utils
+
 
 class GUI(CTk):
-    def __init__(self) -> None:
+    def __init__(self, title: str) -> None:
         super().__init__()
         self.geometry("300x300")
-        self.title("RotoCaster")
-        self.__button_padding = {"pady":10, "padx": 10}
-        self.__center_window(self)
-        self.__json_filename = "profiles.json"
-        self.__create_profiles_file()
-        self.__profiles = self.__load_profiles_file()
+        self.title(title)
+        Utils.center_window(self)
+        self.__profiles_file = ProfilesFile(filename="profiles")
+        self.__profiles_file.create()
+        self.__profiles = self.__profiles_file.load()
         self.__output_speed = 0
         self.__active_profile = None
         self.__active_operator = None
@@ -24,13 +29,15 @@ class GUI(CTk):
             values=self.__list_profiles(),
             command=self.__select_profile
         )
-        self.combobox.pack(**self.__button_padding, anchor="center")
+        self.combobox.pack(padx=10, pady=10, anchor="center")
         self.combobox.set(self.__first_profile())
-        self.__add_button("Edytuj", self.__edit_profile)
-        self.__add_button("Dodaj", self.__add_profile)
-        self.__add_button("Usuń", self.__delete_profile)
-        self.__add_button("Uruchom profil", self.__run_profile)
-        self.__add_button("Uruchom tryb ręczny", self.__run_manual_mode)
+        
+        CustomButton(self, "Edytuj", self.__edit_profile)
+        CustomButton(self, "Dodaj", self.__add_profile)
+        CustomButton(self, "Usuń", self.__delete_profile)
+        CustomButton(self, "Uruchom profil", self.__run_profile)
+        CustomButton(self, "Uruchom tryb ręczny", self.__run_manual_mode)
+
         self.__listen_output_speed()
         self.mainloop()
 
@@ -71,32 +78,6 @@ class GUI(CTk):
     def __manual_to_output_speed(self, *args: any) -> None:
         self.__output_speed = self.__manual_speed.get()
 
-    def __create_profiles_file(self) -> None:
-        if not os.path.exists(self.__json_filename):
-            with open(self.__json_filename, "w") as file:
-                data = {}
-                json.dump(data, file, indent=4)
-
-    def __load_profiles_file(self) -> None:
-        try:
-            with open(self.__json_filename, "r") as file:
-                return json.load(file)
-        except (FileNotFoundError, json.JSONDecodeError):
-            return {}
-
-    def __update_profiles_file(self) -> None:
-        with open("profiles.json", "w") as file:
-            file.write(json.dumps(self.__profiles, indent=4))
-
-    def __center_window(self, window) -> None:
-        screen_width = window.winfo_screenwidth()
-        screen_height = window.winfo_screenheight()
-
-        x = (screen_width - window.winfo_reqwidth()) // 2 - 100
-        y = (screen_height - window.winfo_reqheight()) // 2.25
-
-        window.geometry(f"+{x}+{y}")
-
     def __get_profile_value(self) -> int:
         return self.__profiles[self.__active_profile]
 
@@ -116,37 +97,37 @@ class GUI(CTk):
     def __save_profile_value(self, window: CTkToplevel) -> None:
         self.__profiles[self.__active_profile] = self.__profile_speed.get()
         self.__close_window(window)
-        self.__update_profiles_file()
+        self.__profiles_file.update()
 
     def __run_profile(self) -> None:
-        assert self.__active_profile
-        run_window = CTkToplevel()
-        run_window.geometry("300x100")
-        run_window.title(f"Uruchomiono: {self.__active_profile}")
-        run_window.transient(self)
-        self.__center_window(window=run_window)
-        self.__active_operator = "increment"
-        self.__reach_current_profile_speed()
-        run_stop_button = CTkButton(
-            master=run_window,
-            text="Zatrzymaj",
-            command=lambda:
-                self.__close_window(
-                    window=run_window,
-                    callback=self.__reset_speed_value
-                ),
+        try:
+            assert self.__active_profile
+            run_window = CTkToplevel()
+            run_window.geometry("300x100")
+            run_window.title(f"Uruchomiono: {self.__active_profile}")
+            run_window.transient(self)
+            self.__center_window(window=run_window)
+            self.__active_operator = "increment"
+            self.__reach_current_profile_speed()
+            run_stop_button = CTkButton(
+                master=run_window,
+                text="Zatrzymaj",
+                command=lambda:
+                    self.__close_window(
+                        window=run_window,
+                        callback=self.__reset_speed_value
+                    ),
+            )
+            run_stop_button.place(relx=0.5, rely=0.5, anchor="center")
+        except AssertionError:
+            pass
+
+    def __run_manual_mode(self) -> None:
+        manual_window = CustomTopLevel(
+            title="Uruchomiono: tryb ręczny", 
+            master=self
         )
-        run_stop_button.place(relx=0.5, rely=0.5, anchor="center")
-
-    def __run_manual_mode(self) -> None:        
-        manual_window = CTkToplevel()
-        manual_window.geometry("300x200")
-        manual_window.title("Uruchomiono: tryb ręczny")
-        manual_window.transient(self)
-        self.__center_window(manual_window)
-
-        manual_frame = CTkFrame(master=manual_window)
-        manual_frame.pack(pady=20, padx=20, fill="both", expand=True)
+        manual_frame = CustomFrame(master=manual_window)
 
         self.__manual_speed = IntVar()
         self.__manual_speed_text = StringVar()
@@ -232,14 +213,8 @@ class GUI(CTk):
     def __edit_profile(self) -> None:
         try:
             assert self.__active_profile            
-            edit_window = CTkToplevel()
-            edit_window.geometry("300x200")
-            edit_window.title(self.__active_profile)
-            edit_window.transient(self)
-            self.__center_window(edit_window)
-
-            profile_frame = CTkFrame(master=edit_window)
-            profile_frame.pack(pady=20, padx=20, fill="both", expand=True)
+            edit_window = CustomTopLevel(title=self.__active_profile, master=self)
+            profile_frame = CustomFrame(master=edit_window)
 
             self.__profile_speed = IntVar()
             self.__profile_speed_text = StringVar()
@@ -275,14 +250,6 @@ class GUI(CTk):
         except AssertionError:
             pass
 
-    def __add_button(self, text: str, callback: callable) -> None:
-        button = CTkButton(
-            master=self,
-            text=text,
-            command=callback,
-        )
-        button.pack(**self.__button_padding, anchor="center")
-
 
 if __name__ == "__main__":
-    GUI()
+    GUI("RotoCaster")
