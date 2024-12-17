@@ -1,28 +1,29 @@
+from customtkinter import CTk
+
 from speed.speed_operator import SpeedOperator
 
 
-class SpeedDamper:
+class SpeedDamper(CTk):
     def __init__(self) -> None:
-        self.__operator = SpeedOperator()
-        self.speed = 0
-        self.profile_speed = 0
+        super().__init__()
+        self.actual_speed: int = 0
+        self.current_profile_speed: int = 0
 
     def __reset_speed_value(self) -> None:
-        if self.speed == 0:
-            return self.speed
-        self.speed -= 1
+        if self.actual_speed == 0:
+            return self.actual_speed
+        self.actual_speed -= 1
         self.after(ms=50, func=self.__reset_speed_value)
 
     def __reach_current_profile_speed(self) -> None:
-        if self.speed == self.profile_speed:
-            return self.speed + 1
-        self.speed += 1
+        if self.actual_speed == self.current_profile_speed:
+            return self.actual_speed + 1
+        self.actual_speed += 1
         self.after(ms=50, func=self.__reach_current_profile_speed )
 
-    def speed_gate(self) -> None:
-        match self.__operator:
+    def speed_control(self, operator) -> None:
+        match operator:
             case SpeedOperator.INCREMENT:
                 self.__reach_current_profile_speed()
             case SpeedOperator.DECREMENT:
                 self.__reset_speed_value()
-        self.after(ms=50, func=self.speed_gate)

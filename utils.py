@@ -2,11 +2,11 @@
 
 class Utils:
     @staticmethod
-    def center_window(window) -> None:
-        screen_width = window.winfo_screenwidth()
-        screen_height = window.winfo_screenheight()
+    def center_window(master) -> None:
+        screen_width = master.winfo_screenwidth()
+        screen_height = master.winfo_screenheight()
 
-        x = (screen_width - window.winfo_reqwidth()) // 2 - 100
-        y = (screen_height - window.winfo_reqheight()) // 2.25
+        x = (screen_width - master.winfo_reqwidth()) // 2 - 100
+        y = (screen_height - master.winfo_reqheight()) // 2.25
 
-        window.geometry(f"+{x}+{y}")
+        master.geometry(f"+{x}+{y}")

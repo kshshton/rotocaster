@@ -6,8 +6,8 @@ from utils import Utils
 class CustomTopLevel(CTkToplevel):
     def __init__(
         self, 
-        title: str,
         master: CTk,
+        title: str,
         geometry: str = "300x200",
     ) -> None:  
         super().__init__()
