@@ -1,15 +1,13 @@
 import datetime
 import threading
 
-from customtkinter import CTk
 
-
-class Timer(CTk):
+class Timer:
     def __init__(self, callback=None) -> None:
         self.seconds: int = 0
         self.time: str = "00:00:00"
         self.running: bool = False
-        self.callback = callback # For widget update
+        self.callback: callable = callback # For widget update
 
     def start(self) -> None:
         if not self.running:
