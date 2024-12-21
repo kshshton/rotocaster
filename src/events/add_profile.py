@@ -1,8 +1,8 @@
 from customtkinter import CTk
 
-from custom_components.custom_combobox import CustomComboBox
-from events.edit_profile import EditProfile
-from settings import Settings
+from src.custom_components.custom_combobox import CustomComboBox
+from src.events.edit_profile import EditProfile
+from src.utils.settings import Settings
 
 
 class AddProfile:

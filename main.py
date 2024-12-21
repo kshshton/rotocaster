@@ -1,4 +1,4 @@
-from master import Master
+from src.master import Master
 
 if __name__ == "__main__":
     Master("RotoCaster")

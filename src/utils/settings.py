@@ -2,10 +2,10 @@ from typing import Optional
 
 from customtkinter import CTkToplevel
 
-from profiles.profiles_file import ProfilesFile
-from profiles.profiles_manager import ProfilesManager
-from speed.speed_damper import SpeedDamper
-from speed.speed_operator import SpeedOperator
+from src.profiles.profiles_file import ProfilesFile
+from src.profiles.profiles_manager import ProfilesManager
+from src.speed.speed_damper import SpeedDamper
+from src.speed.speed_operator import SpeedOperator
 
 
 class Settings:
@@ -28,7 +28,7 @@ class Settings:
         finally:
             window.destroy()
 
-    def _save_button_event(self, master: any, value: int) -> None:
+    def _save_profile(self, master: any, value: int) -> None:
         self._manager.active_profile_value = value
         self._file.update(self._manager.profiles)
         self._close_window(master)

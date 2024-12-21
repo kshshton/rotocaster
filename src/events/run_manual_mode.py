@@ -1,11 +1,14 @@
-from customtkinter import (CTk, CTkButton, CTkEntry, CTkSlider, IntVar,
-                           StringVar)
+import threading
 
-from custom_components.custom_frame import CustomFrame
-from custom_components.custom_top_level import CustomTopLevel
-from settings import Settings
-from speed.speed_operator import SpeedOperator
-from utils import Utils
+from customtkinter import (CTk, CTkButton, CTkEntry, CTkLabel, CTkSlider,
+                           IntVar, StringVar)
+
+from src.custom_components.custom_frame import CustomFrame
+from src.custom_components.custom_top_level import CustomTopLevel
+from src.speed.speed_operator import SpeedOperator
+from src.utils.settings import Settings
+from src.utils.timer import Timer
+from src.utils.utility_functions import UtilityFunctions
 
 
 class RunManualMode:
@@ -27,20 +30,26 @@ class RunManualMode:
         self.__manual_speed_text = StringVar()
         self.__manual_speed.trace_add(
             "write",
-            lambda *args: Utils.text_to_speed(
+            lambda *args: UtilityFunctions.text_to_speed(
                 text=self.__manual_speed_text,
                 speed=self.__manual_speed,
             )
         )
         self.__manual_speed_text.trace_add(
             "write",
-            lambda *args: Utils.slider_validation(
+            lambda *args: UtilityFunctions.slider_validation(
                 input=self.__manual_speed_text,
                 output=self.__manual_speed,
             )
         )
         self.__manual_speed.trace_add("write", self.__manual_to_output_speed)
         self.__manual_speed.set(0)
+
+        label = CTkLabel(master=frame, text="123")
+        label.place(relx=0.025, rely=0)
+
+        timer = Timer(callback=lambda t: label.configure(text=t))
+        timer.start()
 
         slider = CTkSlider(master=frame, from_=0, to=100, variable=self.__manual_speed)
         slider.place(relx=0.5, rely=0.5, anchor="center")
@@ -51,11 +60,14 @@ class RunManualMode:
         stop_button = CTkButton(
             master=frame,
             text="Zatrzymaj",
-            command=lambda:
+            command=lambda: (
+                timer.stop(),
                 self.__settings._close_window(
                     window=window,
-                    callback=self.__settings._damper.speed_operation(SpeedOperator.DECREMENT)
+                    callback=self.__settings._damper \
+                        .speed_operation(SpeedOperator.DECREMENT)
                 ),
+            )
         )
         stop_button.place(relx=0.5, rely=0.8, anchor="center")
 

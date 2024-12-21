@@ -1,10 +1,10 @@
 from customtkinter import (CTk, CTkButton, CTkEntry, CTkSlider, IntVar,
                            StringVar)
 
-from custom_components.custom_frame import CustomFrame
-from custom_components.custom_top_level import CustomTopLevel
-from settings import Settings
-from utils import Utils
+from src.custom_components.custom_frame import CustomFrame
+from src.custom_components.custom_top_level import CustomTopLevel
+from src.utils.settings import Settings
+from src.utils.utility_functions import UtilityFunctions
 
 
 class EditProfile():
@@ -25,14 +25,14 @@ class EditProfile():
             self.__speed_text = StringVar()
             self.__speed.trace_add(
                 "write",
-                lambda *args: Utils.text_to_speed(
+                lambda *args: UtilityFunctions.text_to_speed(
                     text=self.__speed_text,
                     speed=self.__speed,
                 )
             )
             self.__speed_text.trace_add(
                 "write",
-                lambda *args: Utils.slider_validation(
+                lambda *args: UtilityFunctions.slider_validation(
                     input=self.__speed_text,
                     output=self.__speed,
                 )
@@ -50,7 +50,7 @@ class EditProfile():
             save_button = CTkButton(
                 master=frame,
                 text="Zapisz",
-                command=lambda: self.__settings._save_button_event(
+                command=lambda: self.__settings._save_profile(
                     master=window,
                     value=self.__speed.get()
                 ),

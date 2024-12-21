@@ -1,7 +1,7 @@
 from tkinter import IntVar, StringVar
 
 
-class Utils:
+class UtilityFunctions:
     @staticmethod
     def center_window(master) -> None:
         screen_width = master.winfo_screenwidth()

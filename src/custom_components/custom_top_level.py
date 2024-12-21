@@ -1,6 +1,6 @@
 from customtkinter import CTk, CTkToplevel
 
-from utils import Utils
+from src.utils.utility_functions import UtilityFunctions
 
 
 class CustomTopLevel(CTkToplevel):
@@ -14,4 +14,4 @@ class CustomTopLevel(CTkToplevel):
         self.title(title)
         self.transient(master)
         self.geometry(geometry)
-        Utils.center_window(self)
+        UtilityFunctions.center_window(self)

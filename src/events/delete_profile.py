@@ -1,5 +1,5 @@
-from custom_components.custom_combobox import CustomComboBox
-from settings import Settings
+from src.custom_components.custom_combobox import CustomComboBox
+from src.utils.settings import Settings
 
 
 class DeleteProfile:
