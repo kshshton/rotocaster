@@ -11,7 +11,7 @@ from src.utils.settings import Settings
 from src.utils.utility_functions import UtilityFunctions
 
 
-class Master(CTk):
+class App(CTk):
     def __init__(self, title: str) -> None:
         super().__init__()        
         self.geometry("300x300")

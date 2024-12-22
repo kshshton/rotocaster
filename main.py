@@ -1,4 +1,4 @@
-from src.master import Master
+from src.app import App
 
 if __name__ == "__main__":
-    Master("RotoCaster")
+    App("RotoCaster")

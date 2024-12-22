@@ -2,10 +2,10 @@ from typing import Optional
 
 from customtkinter import CTkToplevel
 
-from src.profiles.profiles_file import ProfilesFile
-from src.profiles.profiles_manager import ProfilesManager
-from src.speed.speed_damper import SpeedDamper
-from src.speed.speed_operator import SpeedOperator
+from src.types.speed_operator import SpeedOperator
+from src.utils.profiles_file import ProfilesFile
+from src.utils.profiles_manager import ProfilesManager
+from src.utils.speed_damper import SpeedDamper
 
 
 class Settings:

@@ -1,7 +1,7 @@
 from customtkinter import CTk, CTkButton
 
 from src.custom_components.custom_top_level import CustomTopLevel
-from src.speed.speed_operator import SpeedOperator
+from src.types.speed_operator import SpeedOperator
 from src.utils.settings import Settings
 from src.utils.utility_functions import UtilityFunctions
 

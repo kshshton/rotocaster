@@ -1,6 +1,6 @@
 from customtkinter import CTk
 
-from src.speed.speed_operator import SpeedOperator
+from src.types.speed_operator import SpeedOperator
 
 
 class SpeedDamper(CTk):

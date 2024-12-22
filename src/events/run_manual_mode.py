@@ -1,11 +1,9 @@
-import threading
-
 from customtkinter import (CTk, CTkButton, CTkEntry, CTkLabel, CTkSlider,
                            IntVar, StringVar)
 
 from src.custom_components.custom_frame import CustomFrame
 from src.custom_components.custom_top_level import CustomTopLevel
-from src.speed.speed_operator import SpeedOperator
+from src.types.speed_operator import SpeedOperator
 from src.utils.settings import Settings
 from src.utils.timer import Timer
 from src.utils.utility_functions import UtilityFunctions
@@ -45,10 +43,10 @@ class RunManualMode:
         self.__manual_speed.trace_add("write", self.__manual_to_output_speed)
         self.__manual_speed.set(0)
 
-        label = CTkLabel(master=frame, text="123")
+        label = CTkLabel(master=frame)
         label.place(relx=0.025, rely=0)
 
-        timer = Timer(callback=lambda t: label.configure(text=t))
+        timer = Timer(callback=lambda time: label.configure(text=time))
         timer.start()
 
         slider = CTkSlider(master=frame, from_=0, to=100, variable=self.__manual_speed)
