@@ -1,7 +1,7 @@
 from customtkinter import CTk
 
-from src.custom_components.custom_button import CustomButton
-from src.custom_components.custom_combobox import CustomComboBox
+from src.components.custom_button import CustomButton
+from src.components.custom_combobox import CustomComboBox
 from src.events.add_profile import AddProfile
 from src.events.delete_profile import DeleteProfile
 from src.events.edit_profile import EditProfile

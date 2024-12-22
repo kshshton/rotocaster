@@ -1,4 +1,4 @@
-from src.custom_components.custom_combobox import CustomComboBox
+from src.components.custom_combobox import CustomComboBox
 from src.utils.settings import Settings
 
 

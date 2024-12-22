@@ -1,8 +1,8 @@
 from customtkinter import (CTk, CTkButton, CTkEntry, CTkLabel, CTkSlider,
                            IntVar, StringVar)
 
-from src.custom_components.custom_frame import CustomFrame
-from src.custom_components.custom_top_level import CustomTopLevel
+from src.components.custom_frame import CustomFrame
+from src.components.custom_top_level import CustomTopLevel
 from src.types.speed_operator import SpeedOperator
 from src.utils.settings import Settings
 from src.utils.timer import Timer

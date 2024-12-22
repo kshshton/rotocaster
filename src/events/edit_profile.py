@@ -1,8 +1,8 @@
 from customtkinter import (CTk, CTkButton, CTkEntry, CTkSlider, IntVar,
                            StringVar)
 
-from src.custom_components.custom_frame import CustomFrame
-from src.custom_components.custom_top_level import CustomTopLevel
+from src.components.custom_frame import CustomFrame
+from src.components.custom_top_level import CustomTopLevel
 from src.utils.settings import Settings
 from src.utils.utility_functions import UtilityFunctions
 
