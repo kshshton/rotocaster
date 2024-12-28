@@ -9,7 +9,7 @@ class ProfileStruct:
     time: timedelta
     direction: str
 
-    def to_dict(self) -> dict[str, Union[int, timedelta, str]]:
+    def to_dict(self) -> dict[str, Union[int, str]]:
         return {
             "speed": self.speed, 
             "time": self.time, 
