@@ -6,10 +6,10 @@ from customtkinter import CTk
 
 class Timer:
     def __init__(
-            self, 
+            self,
             master: CTk,
-            start_time: str, 
-            update_time: callable, 
+            start_time: str,
+            update_time: callable,
             on_complete: callable
     ) -> None:
         hours, minutes, seconds = [int(num) for num in start_time.split(":")]
@@ -27,13 +27,13 @@ class Timer:
 
     def start(self) -> None:
         if self.current_time.total_seconds() > 0:
-            threading.Thread(target=self.__time_countdown, daemon=True).start()            
+            threading.Thread(target=self.__time_countdown, daemon=True).start()
 
     def __time_countdown(self) -> None:
         while self.current_time.total_seconds() > 0:
             self.current_time -= timedelta(seconds=1)
             if self.__update_time:
-                self.__update_time(self.__formatted_time())
+                self.__master.after(0, self.__update_time, self.__formatted_time())
             threading.Event().wait(1)
         else:
             self.__master.after(0, self.__on_complete)
