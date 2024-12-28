@@ -60,7 +60,7 @@ class RunManualMode:
             text="Zatrzymaj",
             command=lambda: (
                 timer.stop(),
-                self.__settings._close_window(
+                self.__settings.close_window(
                     window=window,
                     callback=self.__settings._damper \
                         .speed_operation(SpeedOperator.DECREMENT)

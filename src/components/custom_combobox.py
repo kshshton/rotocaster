@@ -10,11 +10,13 @@ class CustomComboBox(CTkComboBox):
         callback: callable,
         padding={"padx": 10, "pady": 10},
         anchor="center",
+        **kwargs,
     ):
         super().__init__(
             master=master,
             values=values,
             command=callback,
+            **kwargs,
         )
         self.pack(**padding, anchor=anchor)
         self.set(content)

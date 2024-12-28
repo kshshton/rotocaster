@@ -22,9 +22,9 @@ class SpeedDamper(CTk):
         self.actual_speed += 1
         self.after(ms=self.__refresh_rate, func=self.__reach_current_profile_speed)
 
-    def _listen_speed_value(self) -> None:
+    def listen_speed_value(self) -> None:
         print(self.actual_speed)
-        self.after(ms=self.__refresh_rate, func=self._listen_speed_value)
+        self.after(ms=self.__refresh_rate, func=self.listen_speed_value)
 
     def speed_operation(self, operator: SpeedOperator) -> None:
         match operator:

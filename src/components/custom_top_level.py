@@ -9,8 +9,9 @@ class CustomTopLevel(CTkToplevel):
         master: CTk,
         title: str,
         geometry: str = "300x200",
+        **kwargs,
     ) -> None:  
-        super().__init__()
+        super().__init__(**kwargs)
         self.title(title)
         self.transient(master)
         self.geometry(geometry)

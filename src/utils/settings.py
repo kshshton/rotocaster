@@ -2,6 +2,7 @@ from typing import Optional
 
 from customtkinter import CTkToplevel
 
+from src.types.profile_struct import ProfileStruct
 from src.types.speed_operator import SpeedOperator
 from src.utils.profiles_file import ProfilesFile
 from src.utils.profiles_manager import ProfilesManager
@@ -15,7 +16,7 @@ class Settings:
         self._manager.profiles = self._file.load()
         self._damper = SpeedDamper()
 
-    def _close_window(
+    def close_window(
         self,
         window: CTkToplevel,
         callback: Optional[callable] = None
@@ -28,7 +29,7 @@ class Settings:
         finally:
             window.destroy()
 
-    def _save_profile(self, master: any, value: int) -> None:
-        self._manager.active_profile_value = value
+    def save_window_settings(self, master: any, value: ProfileStruct) -> None:
+        self._manager.active_profile_content = value.to_dict()
         self._file.update(self._manager.profiles)
-        self._close_window(master)
+        self.close_window(master)

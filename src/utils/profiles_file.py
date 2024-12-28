@@ -1,6 +1,8 @@
 import json
 import os
 
+from src.types.profile_struct import ProfileStruct
+
 
 class ProfilesFile:
     def __init__(self, filename: str) -> None:
@@ -21,4 +23,4 @@ class ProfilesFile:
 
     def update(self, profiles: dict) -> None:
         with open(self.filename, "w") as file:
-            file.write(json.dumps(profiles, indent=4))
+            file.write(json.dumps(obj=profiles, indent=4))

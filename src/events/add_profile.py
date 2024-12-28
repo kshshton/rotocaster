@@ -18,6 +18,5 @@ class AddProfile:
             self.__settings._manager.create_profile(name)
             combobox.configure(values=self.__settings._manager.list_profiles())
             EditProfile(master=master, settings=self.__settings)
-            self.__settings._file.update(self.__settings._manager.profiles)
         except AssertionError:
             pass

@@ -8,11 +8,13 @@ class CustomButton(CTkButton):
         text: str, 
         callback: callable,
         anchor: str = "center",
-        padding: dict = {"pady": 10, "padx": 10},
+        padding: dict[str, int] = {"pady": 10, "padx": 10},
+        **kwargs,
     ) -> None:
         super().__init__(
             master=master,
             text=text,
             command=callback,
+            **kwargs,
         )
         self.pack(**padding, anchor=anchor)

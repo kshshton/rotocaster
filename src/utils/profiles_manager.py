@@ -1,16 +1,19 @@
 
 
+from src.types.profile_struct import ProfileStruct
+
+
 class ProfilesManager:
     def __init__(self):
-        self.__profiles: dict = {}
+        self.__profiles: ProfileStruct = None
         self.__active_profile: str = None
 
     @property
-    def profiles(self) -> dict:
+    def profiles(self) -> ProfileStruct:
         return self.__profiles
     
     @profiles.setter
-    def profiles(self, profiles) -> None:
+    def profiles(self, profiles: ProfileStruct) -> None:
         self.__profiles = profiles
 
     @property
@@ -28,17 +31,17 @@ class ProfilesManager:
         del self.__profiles[self.active_profile]
     
     @property
-    def active_profile_value(self) -> int:        
+    def active_profile_content(self) -> dict:        
         return self.__profiles[self.__active_profile]
     
-    @active_profile_value.setter
-    def active_profile_value(self, value: int) -> None:
-        self.__profiles[self.__active_profile] = value
+    @active_profile_content.setter
+    def active_profile_content(self, content: ProfileStruct) -> None:
+        self.__profiles[self.__active_profile] = content
 
     def create_profile(self, name: str) -> None:
         if "" in self.list_profiles():
             self.delete_profile("")
-        self.__profiles[name] = 0
+        self.__profiles[name] = {}
 
     def is_profile_active(self) -> bool:
         return bool(self.__active_profile)

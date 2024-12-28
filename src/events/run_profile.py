@@ -20,12 +20,12 @@ class RunProfile:
                 geometry="300x100"
             )
             UtilityFunctions.center_window(master=window)
-            self.__settings._damper.current_profile_speed = self.__settings._manager.active_profile_value
+            self.__settings._damper.current_profile_speed = self.__settings._manager.active_profile_content
             self.__settings._damper.speed_operation(SpeedOperator.INCREMENT)
             stop_button = CTkButton(
                 master=window,
                 text="Zatrzymaj",
-                command=lambda: self.__settings._close_window(window=window),
+                command=lambda: self.__settings.close_window(window=window),
             )
             stop_button.place(relx=0.5, rely=0.5, anchor="center")
         except AssertionError:
