@@ -9,11 +9,11 @@ class DeleteProfile:
 
     def __render(self, combobox: CustomComboBox) -> None:
         try:
-            assert self.__settings._manager.is_profile_active()
-            self.__settings._manager.active_profile = combobox.get()
-            del self.__settings._manager.active_profile
-            combobox.configure(values=self.__settings._manager.list_profiles())
-            combobox.set(self.__settings._manager.first_profile())
-            self.__settings._file.update(self.__settings._manager.profiles)
+            assert self.__settings.manager.is_profile_active()
+            self.__settings.manager.active_profile = combobox.get()
+            del self.__settings.manager.active_profile
+            combobox.configure(values=self.__settings.manager.list_profiles())
+            combobox.set(self.__settings.manager.first_profile())
+            self.__settings.file.update(self.__settings.manager.profiles)
         except AssertionError:
             pass

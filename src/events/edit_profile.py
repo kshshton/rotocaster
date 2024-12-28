@@ -17,13 +17,13 @@ class EditProfile():
 
     def __render(self, master: CTk) -> None:
         try:
-            assert self.__settings._manager.is_profile_active()
-            profile_content = self.__settings._manager.active_profile_content
-            self.__settings._damper.current_profile_speed = profile_content.get("speed", 0)
+            assert self.__settings.manager.is_profile_active()
+            profile_content = self.__settings.manager.active_profile_content
+            self.__settings.damper.current_profile_speed = profile_content.get("speed", 0)
 
             window = CustomTopLevel(
                 master=master,
-                title=self.__settings._manager.active_profile,
+                title=self.__settings.manager.active_profile,
                 geometry="300x300",
             )
             frame = CustomFrame(master=window)

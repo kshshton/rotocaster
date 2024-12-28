@@ -3,9 +3,9 @@ from customtkinter import (CTk, CTkButton, CTkEntry, CTkLabel, CTkSlider,
 
 from src.components.custom_frame import CustomFrame
 from src.components.custom_top_level import CustomTopLevel
+from src.controllers.stopwatch import Stopwatch
 from src.types.speed_operator import SpeedOperator
 from src.utils.settings import Settings
-from src.utils.timer import Timer
 from src.utils.utility_functions import UtilityFunctions
 
 
@@ -15,7 +15,7 @@ class RunManualMode:
         self.__render(master)
 
     def __manual_to_output_speed(self, *args: any) -> None:
-        self.__settings._damper.actual_speed = self.__manual_speed.get()
+        self.__settings.damper.actual_speed = self.__manual_speed.get()
     
     def __render(self, master) -> None:
         window = CustomTopLevel(
@@ -46,7 +46,7 @@ class RunManualMode:
         label = CTkLabel(master=frame)
         label.place(relx=0.025, rely=0)
 
-        timer = Timer(callback=lambda time: label.configure(text=time))
+        timer = Stopwatch(callback=lambda time: label.configure(text=time))
         timer.start()
 
         slider = CTkSlider(master=frame, from_=0, to=100, variable=self.__manual_speed)
@@ -58,15 +58,15 @@ class RunManualMode:
         stop_button = CTkButton(
             master=frame,
             text="Zatrzymaj",
-            command=lambda: (
+            command=lambda: [
                 timer.stop(),
                 self.__settings.close_window(
                     window=window,
-                    callback=self.__settings._damper \
+                    callback=self.__settings.damper \
                         .speed_operation(SpeedOperator.DECREMENT)
                 ),
-            )
+            ]
         )
         stop_button.place(relx=0.5, rely=0.8, anchor="center")
 
-        self.__settings._damper.actual_speed = self.__manual_speed.get()        
+        self.__settings.damper.actual_speed = self.__manual_speed.get()        

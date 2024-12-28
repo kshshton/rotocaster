@@ -22,9 +22,9 @@ class App(CTk):
 
         self.__combobox = CustomComboBox(
             master=self,
-            values=self.__settings._manager.list_profiles(),
-            content=self.__settings._manager.first_profile(),
-            callback=self.__settings._manager.select_profile 
+            values=self.__settings.manager.list_profiles(),
+            content=self.__settings.manager.first_profile(),
+            callback=self.__settings.manager.select_profile 
         )
         CustomButton(master=self, text="Edytuj", callback=lambda: EditProfile(master=self, settings=self.__settings))
         CustomButton(master=self, text="Dodaj", callback=lambda: AddProfile(master=self, combobox=self.__combobox, settings=self.__settings))
@@ -32,5 +32,5 @@ class App(CTk):
         CustomButton(master=self, text="Uruchom profil", callback=lambda: RunProfile(master=self, settings=self.__settings))
         CustomButton(master=self, text="Uruchom tryb ręczny", callback=lambda: RunManualMode(master=self, settings=self.__settings))
 
-        self.__settings._damper.listen_speed_value()
+        self.__settings.damper.listen_speed_value()
         self.mainloop()

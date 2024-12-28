@@ -71,7 +71,7 @@ class TimeInput(CTkFrame):
         self.seconds.set(seconds)
         
     def __str__(self) -> str:
-        hour = self.hours.get() or "00"
-        minute = self.minutes.get() or "00"
-        second = self.seconds.get() or "00"
-        return f"{hour.zfill(2)}:{minute.zfill(2)}:{second.zfill(2)}"
+        hour = self.hours.get() or "0"
+        minute = self.minutes.get() or "0"
+        second = self.seconds.get() or "0"
+        return f"{hour}:{minute}:{second}"
