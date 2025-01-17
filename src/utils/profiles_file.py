@@ -1,8 +1,6 @@
 import json
 import os
 
-from src.types.profile_struct import ProfileStruct
-
 
 class ProfilesFile:
     def __init__(self, filename: str) -> None:

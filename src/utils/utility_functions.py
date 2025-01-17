@@ -1,5 +1,7 @@
 from tkinter import IntVar, StringVar
 
+from customtkinter import CTkToplevel
+
 
 class UtilityFunctions:
     @staticmethod
@@ -29,3 +31,7 @@ class UtilityFunctions:
             text.set(str(speed.get()))
         except ValueError:
             speed.set(0)
+
+    @staticmethod
+    def close_window(window: CTkToplevel) -> None:        
+        window.destroy()

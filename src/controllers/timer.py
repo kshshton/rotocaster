@@ -1,13 +1,11 @@
 import threading
 from datetime import timedelta
 
-from customtkinter import CTk
-
 
 class Timer:
     def __init__(
             self,
-            master: CTk,
+            master: any,
             start_time: str,
             update_time: callable,
             on_complete: callable
@@ -28,6 +26,9 @@ class Timer:
     def start(self) -> None:
         if self.current_time.total_seconds() > 0:
             threading.Thread(target=self.__time_countdown, daemon=True).start()
+
+    def stop(self) -> None:
+        self.current_time = timedelta(seconds=0)
 
     def __time_countdown(self) -> None:
         while self.current_time.total_seconds() > 0:

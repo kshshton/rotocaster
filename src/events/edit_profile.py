@@ -19,7 +19,7 @@ class EditProfile():
         try:
             assert self.__settings.manager.is_profile_active()
             profile_content = self.__settings.manager.active_profile_content
-            self.__settings.damper.current_profile_speed = profile_content.get("speed", 0)
+            self.__settings.suspension.__current_profile_speed = profile_content.get("speed", 0)
 
             window = CustomTopLevel(
                 master=master,

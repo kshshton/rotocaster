@@ -15,7 +15,7 @@ class RunManualMode:
         self.__render(master)
 
     def __manual_to_output_speed(self, *args: any) -> None:
-        self.__settings.damper.actual_speed = self.__manual_speed.get()
+        self.__settings.suspension.actual_speed = self.__manual_speed.get()
     
     def __render(self, master) -> None:
         window = CustomTopLevel(
@@ -60,13 +60,10 @@ class RunManualMode:
             text="Zatrzymaj",
             command=lambda: [
                 timer.stop(),
-                self.__settings.close_window(
-                    window=window,
-                    callback=self.__settings.damper \
-                        .speed_operation(SpeedOperator.DECREMENT)
-                ),
+                self.__settings.suspension.speed_operation(SpeedOperator.DECREMENT),
+                UtilityFunctions.close_window(window=window),
             ]
         )
         stop_button.place(relx=0.5, rely=0.8, anchor="center")
 
-        self.__settings.damper.actual_speed = self.__manual_speed.get()        
+        self.__settings.suspension.actual_speed = self.__manual_speed.get()        

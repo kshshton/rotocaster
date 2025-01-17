@@ -1,5 +1,3 @@
-
-
 from src.types.profile_struct import ProfileStruct
 
 
