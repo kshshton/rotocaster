@@ -17,15 +17,14 @@ class App(CTk):
         self.geometry("300x300")
         self.title(title)
         UtilityFunctions.center_window(self)
-
         self.__settings = Settings()
-
         self.__combobox = CustomComboBox(
             master=self,
             values=self.__settings.manager.list_profiles(),
             content=self.__settings.manager.first_profile(),
             callback=self.__settings.manager.select_profile 
         )
+
         CustomButton(master=self, text="Edytuj", callback=lambda: EditProfile(master=self, settings=self.__settings))
         CustomButton(master=self, text="Dodaj", callback=lambda: AddProfile(master=self, combobox=self.__combobox, settings=self.__settings))
         CustomButton(master=self, text="Usuń", callback=lambda: DeleteProfile(combobox=self.__combobox, settings=self.__settings))

@@ -65,10 +65,13 @@ class TimeInput(CTkFrame):
             self.seconds.set("")
 
     def update(self, time: str) -> None:
-        hours, minutes, seconds = time.split(":")
-        self.hours.set(hours)
-        self.minutes.set(minutes)
-        self.seconds.set(seconds)
+        try:
+            hours, minutes, seconds = time.split(":")
+            self.hours.set(hours)
+            self.minutes.set(minutes)
+            self.seconds.set(seconds)
+        except AttributeError:
+            pass
         
     def __str__(self) -> str:
         hour = self.hours.get() or "0"
