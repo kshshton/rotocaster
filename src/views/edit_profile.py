@@ -34,7 +34,7 @@ class EditProfile():
 
             direction_combobox = CTkComboBox(
                 master=frame, 
-                values=[AxisDirection.LEFT.value, AxisDirection.RIGHT.value]
+                values=(AxisDirection.LEFT.value, AxisDirection.RIGHT.value)
             )
             direction_combobox.place(relx=0.5, rely=0.65, anchor="center")
             direction_combobox.set(profile_content.get("direction"))

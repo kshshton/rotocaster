@@ -2,13 +2,13 @@ from customtkinter import CTk
 
 from src.components.custom_button import CustomButton
 from src.components.custom_combobox import CustomComboBox
-from src.events.add_profile import AddProfile
-from src.events.delete_profile import DeleteProfile
-from src.events.edit_profile import EditProfile
-from src.events.run_manual_mode import RunManualMode
-from src.events.run_profile import RunProfile
 from src.utils.settings import Settings
 from src.utils.utility_functions import UtilityFunctions
+from src.views.add_profile import AddProfile
+from src.views.delete_profile import DeleteProfile
+from src.views.edit_profile import EditProfile
+from src.views.run_manual_mode import RunManualMode
+from src.views.run_profile import RunProfile
 
 
 class App(CTk):
