@@ -9,14 +9,6 @@ class Stopwatch:
         self.running: bool = False
         self.callback: callable = callback # For widget update
 
-    def start(self) -> None:
-        if not self.running:
-            self.running = True
-            threading.Thread(target=self.__measure_time, daemon=True).start()
-
-    def stop(self) -> None:
-        self.running = False
-
     def __measure_time(self) -> None:
         while self.running:
             self.seconds += 1
@@ -24,3 +16,11 @@ class Stopwatch:
             if self.callback:
                 self.callback(self.time)
             threading.Event().wait(1)
+
+    def start(self) -> None:
+        if not self.running:
+            self.running = True
+            threading.Thread(target=self.__measure_time, daemon=True).start()
+
+    def stop(self) -> None:
+        self.running = False

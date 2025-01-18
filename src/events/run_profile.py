@@ -24,7 +24,7 @@ class RunProfile:
             profile_content = self.__settings.manager.active_profile_content
 
             self.__settings.suspension.current_profile_speed = profile_content.get("speed")
-            self.__settings.suspension.speed_operation(SpeedOperator.INCREMENT)
+            self.__settings.suspension.operation(SpeedOperator.INCREMENT)
 
             label = CTkLabel(master=window)
             label.place(relx=0.025, rely=0)            
@@ -33,18 +33,17 @@ class RunProfile:
                 master=master,
                 start_time=profile_content.get("time"),
                 update_time=lambda time: label.configure(text=time),
-                on_complete=lambda: UtilityFunctions.close_window(window=window)
+                on_complete=lambda: self.__settings.close_window_and_reset_speed(window)
             )
             timer.start()
 
             stop_button = CTkButton(
                 master=window,
                 text="Zatrzymaj",
-                command=lambda: [
+                command=lambda: (
                     timer.stop(),
-                    self.__settings.suspension.speed_operation(SpeedOperator.DECREMENT),
-                    UtilityFunctions.close_window(window=window),
-                ]
+                    self.__settings.close_window_and_reset_speed(window)
+                )
             )
             stop_button.place(relx=0.5, rely=0.5, anchor="center")
         except AssertionError:

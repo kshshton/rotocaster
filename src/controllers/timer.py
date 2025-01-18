@@ -4,11 +4,11 @@ from datetime import timedelta
 
 class Timer:
     def __init__(
-            self,
-            master: any,
-            start_time: str,
-            update_time: callable,
-            on_complete: callable
+        self,
+        master: any,
+        start_time: str,
+        update_time: callable,
+        on_complete: callable
     ) -> None:
         hours, minutes, seconds = [int(num) for num in start_time.split(":")]
         self.start_time: timedelta = timedelta(hours=hours, minutes=minutes, seconds=seconds)
@@ -23,13 +23,6 @@ class Timer:
         minutes, seconds = divmod(remainder, 60)
         return f"{hours:02}:{minutes:02}:{seconds:02}"
 
-    def start(self) -> None:
-        if self.current_time.total_seconds() > 0:
-            threading.Thread(target=self.__time_countdown, daemon=True).start()
-
-    def stop(self) -> None:
-        self.current_time = timedelta(seconds=0)
-
     def __time_countdown(self) -> None:
         while self.current_time.total_seconds() > 0:
             self.current_time -= timedelta(seconds=1)
@@ -38,3 +31,10 @@ class Timer:
             threading.Event().wait(1)
         else:
             self.__master.after(0, self.__on_complete)
+
+    def start(self) -> None:
+        if self.current_time.total_seconds() > 0:
+            threading.Thread(target=self.__time_countdown, daemon=True).start()
+
+    def stop(self) -> None:
+        self.current_time = timedelta(seconds=0)

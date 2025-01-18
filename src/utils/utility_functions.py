@@ -33,5 +33,5 @@ class UtilityFunctions:
             speed.set(0)
 
     @staticmethod
-    def close_window(window: CTkToplevel) -> None:        
-        window.destroy()
+    def close_window(master: CTkToplevel) -> None:        
+        master.destroy()

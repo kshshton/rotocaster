@@ -32,5 +32,5 @@ class App(CTk):
         CustomButton(master=self, text="Uruchom profil", callback=lambda: RunProfile(master=self, settings=self.__settings))
         CustomButton(master=self, text="Uruchom tryb ręczny", callback=lambda: RunManualMode(master=self, settings=self.__settings))
 
-        self.__settings.suspension.listen_speed_value()
+        self.__settings.suspension.listen_value()
         self.mainloop()

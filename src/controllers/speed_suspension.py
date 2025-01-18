@@ -9,29 +9,29 @@ class SpeedSuspension(CTk):
         self.__refresh_rate = refresh_rate
         self.__stop: bool = False
         self.current_profile_speed: int = 0
-        self.actual_speed: int = 0
+        self.speed: int = 0
 
-    def __reset_speed_value(self) -> None:
-        if self.actual_speed == 0:
-            return self.actual_speed
-        self.actual_speed -= 1
-        self.after(ms=self.__refresh_rate, func=self.__reset_speed_value)
+    def __reset_value(self) -> None:
+        if self.speed == 0:
+            return self.speed
+        self.speed -= 1
+        self.after(ms=self.__refresh_rate, func=self.__reset_value)
 
-    def __reach_current_profile_speed(self) -> None:
-        if self.actual_speed == self.current_profile_speed or self.__stop:
-            return self.actual_speed
-        self.actual_speed += 1
-        self.after(ms=self.__refresh_rate, func=self.__reach_current_profile_speed)
+    def __reach_current_profile_value(self) -> None:
+        if self.speed == self.current_profile_speed or self.__stop:
+            return self.speed
+        self.speed += 1
+        self.after(ms=self.__refresh_rate, func=self.__reach_current_profile_value)
 
-    def listen_speed_value(self) -> None:
-        print(self.actual_speed)
-        self.after(ms=self.__refresh_rate, func=self.listen_speed_value)
+    def listen_value(self) -> None:
+        print(self.speed)
+        self.after(ms=self.__refresh_rate, func=self.listen_value)
 
-    def speed_operation(self, operator: SpeedOperator) -> None:
+    def operation(self, operator: SpeedOperator) -> None:
         match operator:
             case SpeedOperator.INCREMENT:
                 self.__stop = False
-                self.__reach_current_profile_speed()
+                self.__reach_current_profile_value()
             case SpeedOperator.DECREMENT:
                 self.__stop = True
-                self.__reset_speed_value()
+                self.__reset_value()
