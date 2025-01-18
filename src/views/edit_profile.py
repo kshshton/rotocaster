@@ -16,14 +16,14 @@ class EditProfile():
         self.__settings = settings
         self.__relx: float = 0.5
         self.__rely: float = 0.1
-        self.__rely_diff: float = 0.17
+        self.__rely_padding: float = 0.17
         self.__render(master)
 
     def __render(self, master: CTk) -> None:
         try:
             assert self.__settings.manager.is_profile_active()
             profile_content = self.__settings.manager.active_profile_content
-            self.__settings.suspension.__current_profile_speed = profile_content.get("speed", 0)
+            self.__settings.suspension.current_profile_speed = profile_content.get("speed", 0)
 
             window = CustomTopLevel(
                 master=master,
@@ -56,10 +56,10 @@ class EditProfile():
             speed_box.place(relx=self.__relx, rely=self.__rely, anchor="center")
 
             slider = CTkSlider(master=frame, from_=0, to=100, variable=self.__speed)
-            slider.place(relx=self.__relx, rely=self.__rely + self.__rely_diff / 1.5, anchor="center")
+            slider.place(relx=self.__relx, rely=self.__rely + self.__rely_padding / 1.5, anchor="center")
             slider.set(profile_content.get("speed", 0))
 
-            vertical_position = VerticalPosition(self.__rely, self.__rely_diff)
+            vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
 
             time_input = TimeInput(frame)
             time_input.place(relx=self.__relx, rely=next(vertical_position), anchor="center")

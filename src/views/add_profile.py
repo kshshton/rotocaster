@@ -19,7 +19,7 @@ class AddProfile:
         self.__settings = settings
         self.__relx: float = 0.5
         self.__rely: float = 0.1
-        self.__rely_diff: float = 0.2
+        self.__rely_padding: float = 0.2
         self.__render(master, combobox)
 
     def __render(self, master: CTk, combobox: CustomComboBox) -> None:
@@ -61,9 +61,9 @@ class AddProfile:
             speed_box.place(relx=self.__relx, rely=self.__rely, anchor="center")
 
             slider = CTkSlider(master=frame, from_=0, to=100, variable=self.__speed)
-            slider.place(relx=self.__relx, rely=self.__rely + self.__rely_diff / 1.5, anchor="center")
+            slider.place(relx=self.__relx, rely=self.__rely + self.__rely_padding / 1.5, anchor="center")
 
-            vertical_position = VerticalPosition(self.__rely, self.__rely_diff)
+            vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
 
             time_input = TimeInput(frame)
             time_input.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
