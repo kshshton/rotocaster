@@ -1,5 +1,5 @@
-from customtkinter import (CTk, CTkButton, CTkComboBox, CTkEntry, CTkSlider,
-                           IntVar, StringVar)
+from customtkinter import (CTk, CTkButton, CTkComboBox, CTkEntry, CTkLabel,
+                           CTkSlider, IntVar, StringVar)
 
 from src.components.custom_frame import CustomFrame
 from src.components.custom_top_level import CustomTopLevel
@@ -16,7 +16,7 @@ class EditProfile():
         self.__settings = settings
         self.__relx: float = 0.5
         self.__rely: float = 0.1
-        self.__rely_diff: float = 0.15
+        self.__rely_diff: float = 0.17
         self.__render(master)
 
     def __render(self, master: CTk) -> None:
@@ -28,7 +28,7 @@ class EditProfile():
             window = CustomTopLevel(
                 master=master,
                 title=f"Profil: {self.__settings.manager.active_profile}",
-                geometry="300x300",
+                geometry="320x300",
             )
             frame = CustomFrame(master=window)
 
@@ -49,6 +49,9 @@ class EditProfile():
                 )
             )
 
+            speed_label = CTkLabel(master=frame, text="Prędkość: ")
+            speed_label.place(relx=self.__relx / 4, rely=self.__rely, anchor="center")
+
             speed_box = CTkEntry(master=frame, textvariable=self.__speed_text)
             speed_box.place(relx=self.__relx, rely=self.__rely, anchor="center")
 
@@ -59,24 +62,23 @@ class EditProfile():
             vertical_position = VerticalPosition(self.__rely, self.__rely_diff)
 
             time_input = TimeInput(frame)
-            time_input.place(
-                relx=self.__relx, 
-                rely=next(vertical_position),
-                anchor="center"
-            )
+            time_input.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
             time_input.update(profile_content.get("time"))
+
+            direction_position = next(vertical_position)
+
+            direction_label = CTkLabel(master=frame, text="Prędkość: ")
+            direction_label.place(relx=self.__relx / 4, rely=direction_position, anchor="center")
 
             direction_combobox = CTkComboBox(
                 master=frame, 
                 values=[AxisDirection.LEFT.value, AxisDirection.RIGHT.value]
             )
-            direction_combobox.place(
-                relx=self.__relx, 
-                rely=next(vertical_position),
-                anchor="center"
-            )
+            direction_combobox.place(relx=self.__relx, rely=direction_position, anchor="center")
             direction_combobox.set(profile_content.get("direction"))
 
+            steps_button = CTkButton(master=frame, text="Kroki")
+            steps_button.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
 
             save_button = CTkButton(
                 master=frame,
@@ -90,10 +92,6 @@ class EditProfile():
                     )
                 ),
             )
-            save_button.place(
-                relx=self.__relx, 
-                rely=next(vertical_position),
-                anchor="center"
-            )
+            save_button.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
         except AssertionError:
             pass
