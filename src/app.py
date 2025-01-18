@@ -1,4 +1,4 @@
-from customtkinter import CTk
+from customtkinter import CTk, CTkLabel
 
 from src.components.custom_button import CustomButton
 from src.components.custom_combobox import CustomComboBox
@@ -18,6 +18,9 @@ class App(CTk):
         self.title(title)
         UtilityFunctions.center_window(self)
         self.__settings = Settings()
+        self.__label = CTkLabel(self, text="Profil: ")
+        self.__label.place(relx=0.16, rely=0.08, anchor="center")
+
         self.__combobox = CustomComboBox(
             master=self,
             values=self.__settings.manager.list_profiles(),
