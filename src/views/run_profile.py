@@ -14,14 +14,14 @@ class RunProfile:
 
     def __render(self, master) -> None:
         try:
-            assert self.__settings.manager.is_profile_active()
+            assert self.__settings.profiles_manager.is_profile_active()
             window = CustomTopLevel(
                 master=master,
-                title=f"Uruchomiono: {self.__settings.manager.active_profile}",
+                title=f"Uruchomiono: {self.__settings.profiles_manager.active_profile}",
                 geometry="300x100"
             )
             UtilityFunctions.center_window(master=window)
-            profile_content = self.__settings.manager.active_profile_content
+            profile_content = self.__settings.profiles_manager.active_profile_content
 
             self.__settings.suspension.current_profile_speed = profile_content.get("speed")
             self.__settings.suspension.operation(SpeedOperator.INCREMENT)

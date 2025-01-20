@@ -25,14 +25,15 @@ class AddProfile:
     def __render(self, master: CTk, combobox: CustomComboBox) -> None:
         try:
             name = combobox.get()
-            assert not name in self.__settings.manager.list_profiles()
-            self.__settings.manager.active_profile = name
-            self.__settings.manager.create_profile(name)
-            combobox.configure(values=self.__settings.manager.list_profiles())
+            assert not name in self.__settings.profiles_manager.list_profiles()
+            self.__settings.profiles_manager.active_profile = name
+            self.__settings.profiles_manager.create_profile(name)
+            combobox.configure(values=self.__settings.profiles_manager.list_profiles())
+            vertical_position = VerticalPosition(self.__rely, self.__rely_padding / 1.5)
 
             window = CustomTopLevel(
                 master=master,
-                title=f"Profil: {self.__settings.manager.active_profile}",
+                title=f"Profil: {self.__settings.profiles_manager.active_profile}",
                 geometry="320x280",
             )
             frame = CustomFrame(master=window)
@@ -61,9 +62,7 @@ class AddProfile:
             speed_box.place(relx=self.__relx, rely=self.__rely, anchor="center")
 
             slider = CTkSlider(master=frame, from_=0, to=100, variable=self.__speed)
-            slider.place(relx=self.__relx, rely=self.__rely + self.__rely_padding / 1.5, anchor="center")
-
-            vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
+            slider.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
 
             time_input = TimeInput(frame)
             time_input.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
@@ -82,14 +81,16 @@ class AddProfile:
             save_button = CTkButton(
                 master=frame,
                 text="Zapisz",
-                command=lambda: self.__settings.save_window_settings(
-                    master=window,
-                    value=ProfileStruct(
-                        speed=self.__speed.get(), 
-                        time=str(time_input), 
-                        direction=direction_combobox.get(),
-                    )
-                ),
+                command=lambda: (
+                    self.__settings.save_profile_settings(
+                        value=ProfileStruct(
+                            speed=self.__speed.get(), 
+                            time=str(time_input), 
+                            direction=direction_combobox.get(),
+                        )
+                    ),
+                    UtilityFunctions.close_window(master=window),
+                )
             )
             save_button.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
         except AssertionError:

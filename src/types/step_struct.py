@@ -1,19 +1,17 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import timedelta
 from typing import Union
 
 
 @dataclass
-class ProfileStruct:
+class StepStruct:
     speed: int
     time: timedelta
     direction: str
-    steps: dict[dict] = field(default_factory=dict)
 
-    def to_dict(self) -> dict[str, Union[int, str, dict]]:
+    def to_dict(self) -> dict[str, Union[int, str]]:
         return {
             "speed": self.speed, 
             "time": self.time, 
             "direction": self.direction,
-            "steps": self.steps,
         }

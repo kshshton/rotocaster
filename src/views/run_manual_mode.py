@@ -4,7 +4,6 @@ from customtkinter import (CTk, CTkButton, CTkEntry, CTkLabel, CTkSlider,
 from src.components.custom_frame import CustomFrame
 from src.components.custom_top_level import CustomTopLevel
 from src.controllers.stopwatch import Stopwatch
-from src.types.speed_operator import SpeedOperator
 from src.utils.settings import Settings
 from src.utils.utility_functions import UtilityFunctions
 
@@ -60,7 +59,7 @@ class RunManualMode:
             text="Zatrzymaj",
             command=lambda: (
                 timer.stop(),
-                self.__settings.close_window_and_reset_speed(frame)
+                self.__settings.close_window_and_reset_speed(window)
             )   
         )
         stop_button.place(relx=0.5, rely=0.8, anchor="center")

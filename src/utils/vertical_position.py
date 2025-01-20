@@ -1,10 +1,10 @@
 
 class VerticalPosition:
-    def __init__(self, rely: float, rely_diff: float) -> None:
+    def __init__(self, rely: float, rely_padding: float) -> None:
         self.rely: float = rely
-        self.rely_diff: float = rely_diff
+        self.rely_padding: float = rely_padding
         self.position: int = 0
 
     def __next__(self) -> float:
         self.position += 1
-        return self.rely + self.rely_diff * self.position + (self.rely_diff / 1.5)
+        return self.rely + self.position * self.rely_padding

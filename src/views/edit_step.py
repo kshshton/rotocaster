@@ -1,19 +1,17 @@
 from customtkinter import (CTk, CTkButton, CTkComboBox, CTkEntry, CTkLabel,
                            CTkSlider, IntVar, StringVar)
 
-from src.components.custom_button import CustomButton
 from src.components.custom_frame import CustomFrame
 from src.components.custom_top_level import CustomTopLevel
 from src.components.time_input import TimeInput
 from src.types.axis_direction import AxisDirection
-from src.types.profile_struct import ProfileStruct
+from src.types.step_struct import StepStruct
 from src.utils.settings import Settings
 from src.utils.utility_functions import UtilityFunctions
 from src.utils.vertical_position import VerticalPosition
-from src.views.manage_steps import ManageSteps
 
 
-class EditProfile:
+class EditStep:
     def __init__(self, master: CTk, settings: Settings) -> None:
         self.__settings = settings
         self.__relx: float = 0.5
@@ -23,14 +21,17 @@ class EditProfile:
 
     def __render(self, master: CTk) -> None:
         try:
-            assert self.__settings.profiles_manager.is_profile_active()
-            profile_content = self.__settings.profiles_manager.active_profile_content
-            self.__settings.suspension.current_profile_speed = profile_content.get("speed", 0)
+            assert self.__settings.steps_manager.is_step_active()
+            active_profile = self.__settings.profiles_manager.active_profile
+            active_step = self.__settings.steps_manager.active_step
+            step_content = self.__settings.steps_manager \
+                .get_active_step_content(profile_name=active_profile)
+            self.__settings.suspension.current_profile_speed = step_content.get("speed", 0)
             vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
 
             window = CustomTopLevel(
                 master=master,
-                title=f"Profil: {self.__settings.profiles_manager.active_profile}",
+                title=f"Profil: {active_profile} - Krok: {active_step}",
                 geometry="320x300",
             )
             frame = CustomFrame(master=window)
@@ -60,12 +61,11 @@ class EditProfile:
 
             slider = CTkSlider(master=frame, from_=0, to=100, variable=self.__speed)
             slider.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
-            slider.set(profile_content.get("speed", 0))
-
+            slider.set(step_content.get("speed", 0))
 
             time_input = TimeInput(frame)
             time_input.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
-            time_input.update(profile_content.get("time"))
+            time_input.update(step_content.get("time"))
 
             direction_position = next(vertical_position)
 
@@ -77,24 +77,15 @@ class EditProfile:
                 values=[AxisDirection.LEFT.value, AxisDirection.RIGHT.value]
             )
             direction_combobox.place(relx=self.__relx, rely=direction_position, anchor="center")
-            direction_combobox.set(profile_content.get("direction"))
-
-            steps_button = CustomButton(
-                master=frame, 
-                text="Kroki", 
-                callback=lambda: ManageSteps(
-                    master=frame, 
-                    settings=self.__settings,
-                )
-            )
-            steps_button.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
+            direction_combobox.set(step_content.get("direction"))
 
             save_button = CTkButton(
                 master=frame,
                 text="Zapisz",
                 command=lambda: (
-                    self.__settings.save_profile_settings(
-                        value=ProfileStruct(
+                    self.__settings.steps_manager.update_active_step_content(
+                        profile_name=active_profile,
+                        content=StepStruct(
                             speed=self.__speed.get(), 
                             time=str(time_input), 
                             direction=direction_combobox.get(),

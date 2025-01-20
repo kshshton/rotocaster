@@ -23,9 +23,9 @@ class App(CTk):
 
         self.__combobox = CustomComboBox(
             master=self,
-            values=self.__settings.manager.list_profiles(),
-            content=self.__settings.manager.first_profile(),
-            callback=self.__settings.manager.select_profile 
+            values=self.__settings.profiles_manager.list_profiles(),
+            content=self.__settings.profiles_manager.first_profile(),
+            callback=self.__settings.profiles_manager.select_profile 
         )
 
         CustomButton(master=self, text="Edytuj", callback=lambda: EditProfile(master=self, settings=self.__settings))

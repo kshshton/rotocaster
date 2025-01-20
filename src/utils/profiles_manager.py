@@ -1,17 +1,15 @@
-from src.types.profile_struct import ProfileStruct
-
 
 class ProfilesManager:
     def __init__(self):
-        self.__profiles: ProfileStruct = None
+        self.__profiles: dict[dict] = None
         self.__active_profile: str = None
 
     @property
-    def profiles(self) -> ProfileStruct:
+    def profiles(self) -> dict:
         return self.__profiles
     
     @profiles.setter
-    def profiles(self, profiles: ProfileStruct) -> None:
+    def profiles(self, profiles: dict) -> None:
         self.__profiles = profiles
 
     @property
@@ -30,11 +28,11 @@ class ProfilesManager:
     
     @property
     def active_profile_content(self) -> dict:        
-        return self.__profiles[self.__active_profile]
+        return self.__profiles[self.active_profile]
     
     @active_profile_content.setter
-    def active_profile_content(self, content: ProfileStruct) -> None:
-        self.__profiles[self.__active_profile] = content
+    def active_profile_content(self, content: dict) -> None:
+        self.__profiles[self.active_profile] = content
 
     def create_profile(self, name: str) -> None:
         if "" in self.list_profiles():
@@ -42,13 +40,19 @@ class ProfilesManager:
         self.__profiles[name] = {}
 
     def is_profile_active(self) -> bool:
-        return bool(self.__active_profile)
+        return bool(self.active_profile)
+
+    def get_profile(self, name: str) -> dict:
+        return self.__profiles[name]
+
+    def get_active_profile(self) -> dict:
+        return self.__profiles[self.active_profile]
     
     def delete_profile(self, name: str) -> None:
         del self.__profiles[name]
     
     def select_profile(self, name: str) -> None:
-        self.__active_profile = name
+        self.active_profile = name
 
     def list_profiles(self) -> list:
         try:
@@ -62,5 +66,9 @@ class ProfilesManager:
     def first_profile(self) -> str:
         profiles = self.list_profiles()
         first_profile = next(iter(profiles), "")
-        self.__active_profile = first_profile
+        self.active_profile = first_profile
         return first_profile
+
+    def update_steps_for_profile(self, name: str, steps: dict) -> None:
+        profile = self.profiles[name]
+        profile["steps"] = steps
