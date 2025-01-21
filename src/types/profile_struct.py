@@ -8,7 +8,7 @@ class ProfileStruct:
     speed: int
     time: timedelta
     direction: str
-    steps: dict[dict] = field(default_factory=dict)
+    steps: dict[str, dict] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Union[int, str, dict]]:
         return {

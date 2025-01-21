@@ -18,8 +18,8 @@ class AddProfile:
     def __init__(self, master: CTk, combobox: CustomComboBox, settings: Settings) -> None:
         self.__settings = settings
         self.__relx: float = 0.5
-        self.__rely: float = 0.1
-        self.__rely_padding: float = 0.2
+        self.__rely: float = 0.15
+        self.__rely_padding: float = 0.185
         self.__render(master, combobox)
 
     def __render(self, master: CTk, combobox: CustomComboBox) -> None:
@@ -29,7 +29,7 @@ class AddProfile:
             self.__settings.profiles_manager.active_profile = name
             self.__settings.profiles_manager.create_profile(name)
             combobox.configure(values=self.__settings.profiles_manager.list_profiles())
-            vertical_position = VerticalPosition(self.__rely, self.__rely_padding / 1.5)
+            vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
 
             window = CustomTopLevel(
                 master=master,

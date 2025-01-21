@@ -17,7 +17,7 @@ class AddStep:
         self.__settings = settings
         self.__relx: float = 0.5
         self.__rely: float = 0.1
-        self.__rely_padding: float = 0.16
+        self.__rely_padding: float = 0.18
         self.__render(master, combobox)
 
     def __render(self, master: CTk, combobox: CustomComboBox) -> None:
@@ -66,7 +66,7 @@ class AddStep:
 
         direction_position = next(vertical_position)
 
-        direction_label = CTkLabel(master=frame, text="Kierunek: ")
+        direction_label = CTkLabel(master=frame, text="Kierunek:")
         direction_label.place(relx=self.__relx / 4, rely=direction_position, anchor="center")
 
         direction_combobox = CTkComboBox(

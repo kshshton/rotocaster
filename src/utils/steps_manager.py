@@ -1,5 +1,3 @@
-from typing import Optional
-
 from src.types.step_struct import StepStruct
 
 
@@ -33,26 +31,29 @@ class StepsManager:
         self.__steps[profile_name][self.__active_step] = content.to_dict()
 
     def create_step(self, profile_name: str) -> None:
-        next_number = len(self.sequence(profile_name)) + 1
-        self.__active_step = str(next_number)
         if not self.__steps.get(profile_name, None):
             self.__steps[profile_name] = {}
+        steps = self.sequence(profile_name)
+        if len(steps) == 1 and steps[0] == "":
+            steps.pop()
+        next_number = len(steps) + 1
+        self.__active_step = str(next_number)
         self.__steps[profile_name][self.__active_step] = {}
 
     def is_step_active(self) -> bool:
         return bool(self.__active_step)
 
-    def get_step(self, profile_name: str, id: int) -> dict:
-        return self.__steps[profile_name][str(id)]
+    def get_step(self, profile_name: str, step: str) -> dict:
+        return self.__steps[profile_name][step]
 
     def get_active_step(self, profile_name: str) -> dict:
         return self.__steps[profile_name][self.__active_step]
 
-    def delete_step(self, profile_name: str, number: int) -> None:
-        del self.__steps[profile_name][str(number)]
+    def delete_step(self, profile_name: str, step: str) -> None:
+        del self.__steps[profile_name][step]
     
-    def select_step(self, id: str) -> None:
-        self.__active_step = id
+    def select_step(self, step: str) -> None:
+        self.__active_step = step
 
     def sequence(self, profile_name: str) -> list:
         try:
@@ -61,6 +62,6 @@ class StepsManager:
         except:
             return []
 
-    def first_step(self, profile_name: str) -> Optional[str]:
+    def first_step(self, profile_name: str) -> str:
         steps = self.sequence(profile_name)
-        return next(iter(steps), None)
+        return next(iter(steps), "")

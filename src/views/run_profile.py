@@ -23,8 +23,8 @@ class RunProfile:
             UtilityFunctions.center_window(master=window)
             profile_content = self.__settings.profiles_manager.active_profile_content
 
-            self.__settings.suspension.current_profile_speed = profile_content.get("speed")
-            self.__settings.suspension.operation(SpeedOperator.INCREMENT)
+            self.__settings.engine.current_profile_speed = profile_content.get("speed")
+            self.__settings.engine.operation(SpeedOperator.INCREMENT)
 
             label = CTkLabel(master=window)
             label.place(relx=0.025, rely=0)            

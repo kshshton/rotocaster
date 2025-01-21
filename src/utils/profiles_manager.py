@@ -1,7 +1,7 @@
 
 class ProfilesManager:
     def __init__(self):
-        self.__profiles: dict[dict] = None
+        self.__profiles: dict[str, dict] = None
         self.__active_profile: str = None
 
     @property

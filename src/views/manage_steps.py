@@ -9,6 +9,7 @@ from src.utils.settings import Settings
 from src.utils.utility_functions import UtilityFunctions
 from src.utils.vertical_position import VerticalPosition
 from src.views.add_step import AddStep
+from src.views.delete_step import DeleteStep
 from src.views.edit_step import EditStep
 
 
@@ -62,7 +63,7 @@ class ManageSteps:
         delete_button = CustomButton(
             master=frame,
             text="Usuń",
-            callback=lambda: None,
+            callback=lambda: DeleteStep(settings=self.__settings, combobox=combobox),
         )
         delete_button.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
 

@@ -10,15 +10,16 @@ class ProfilesFile:
     def create(self) -> None:
         if not os.path.exists(self.filename):
             with open(self.filename, "w") as file:
-                json.dump({}, file, indent=4)
+                json.dump({"profiles": {}}, file, indent=4)
 
     def load(self) -> dict:
         try:
             with open(self.filename, "r") as file:
-                return json.load(file)
+                return json.load(file)["profiles"]
         except (FileNotFoundError, json.JSONDecodeError):
             return {}
 
     def update(self, profiles: dict) -> None:
         with open(self.filename, "w") as file:
-            file.write(json.dumps(obj=profiles, indent=4))
+            content = {"profiles": profiles}
+            file.write(json.dumps(obj=content, indent=4))

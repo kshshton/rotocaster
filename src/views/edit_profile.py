@@ -25,7 +25,7 @@ class EditProfile:
         try:
             assert self.__settings.profiles_manager.is_profile_active()
             profile_content = self.__settings.profiles_manager.active_profile_content
-            self.__settings.suspension.current_profile_speed = profile_content.get("speed", 0)
+            self.__settings.engine.current_profile_speed = profile_content.get("speed", 0)
             vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
 
             window = CustomTopLevel(
@@ -69,7 +69,7 @@ class EditProfile:
 
             direction_position = next(vertical_position)
 
-            direction_label = CTkLabel(master=frame, text="Kierunek: ")
+            direction_label = CTkLabel(master=frame, text="Kierunek:")
             direction_label.place(relx=self.__relx / 4, rely=direction_position, anchor="center")
 
             direction_combobox = CTkComboBox(
@@ -98,6 +98,7 @@ class EditProfile:
                             speed=self.__speed.get(), 
                             time=str(time_input), 
                             direction=direction_combobox.get(),
+                            steps=self.__settings.profiles_manager.active_profile_content["steps"],
                         )
                     ),
                     UtilityFunctions.close_window(master=window),

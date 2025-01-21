@@ -26,7 +26,7 @@ class EditStep:
             active_step = self.__settings.steps_manager.active_step
             step_content = self.__settings.steps_manager \
                 .get_active_step_content(profile_name=active_profile)
-            self.__settings.suspension.current_profile_speed = step_content.get("speed", 0)
+            self.__settings.engine.current_profile_speed = step_content.get("speed", 0)
             vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
 
             window = CustomTopLevel(
@@ -69,7 +69,7 @@ class EditStep:
 
             direction_position = next(vertical_position)
 
-            direction_label = CTkLabel(master=frame, text="Kierunek: ")
+            direction_label = CTkLabel(master=frame, text="Kierunek:")
             direction_label.place(relx=self.__relx / 4, rely=direction_position, anchor="center")
 
             direction_combobox = CTkComboBox(
