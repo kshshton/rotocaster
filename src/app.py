@@ -29,9 +29,9 @@ class App(CTk):
             callback=self.__settings.profiles_manager.select_profile,
         )
 
-        CustomButton(master=self, text="Edytuj", callback=lambda: ManageSteps(master=self, combobox=self.__combobox, settings=self.__settings))
-        CustomButton(master=self, text="Dodaj", callback=lambda: AddProfile(master=self, combobox=self.__combobox, settings=self.__settings))
-        CustomButton(master=self, text="Usuń", callback=lambda: DeleteProfile(combobox=self.__combobox, settings=self.__settings))
+        CustomButton(master=self, text="Zarządzaj krokami", callback=lambda: ManageSteps(master=self, combobox=self.__combobox, settings=self.__settings))
+        CustomButton(master=self, text="Dodaj profil", callback=lambda: AddProfile(master=self, combobox=self.__combobox, settings=self.__settings))
+        CustomButton(master=self, text="Usuń profil", callback=lambda: DeleteProfile(combobox=self.__combobox, settings=self.__settings))
         CustomButton(master=self, text="Uruchom profil", callback=lambda: RunProfile(master=self, settings=self.__settings))
         CustomButton(master=self, text="Uruchom tryb ręczny", callback=lambda: RunManualMode(master=self, settings=self.__settings))
 
