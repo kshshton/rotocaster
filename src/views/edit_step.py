@@ -16,7 +16,7 @@ class EditStep:
         self.__settings = settings
         self.__relx: float = 0.5
         self.__rely: float = 0.1
-        self.__rely_padding: float = 0.16
+        self.__rely_padding: float = 0.2
         self.__render(master)
 
     def __render(self, master: CTk) -> None:

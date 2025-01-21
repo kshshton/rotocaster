@@ -34,10 +34,10 @@ class ProfilesManager:
     def active_profile_content(self, content: dict) -> None:
         self.__profiles[self.active_profile] = content
 
-    def create_profile(self, name: str) -> None:
+    def create_profile(self, profile_name: str) -> None:
         if "" in self.list_profiles():
             self.delete_profile("")
-        self.__profiles[name] = {}
+        self.__profiles[profile_name] = {}
 
     def is_profile_active(self) -> bool:
         return bool(self.active_profile)
@@ -72,3 +72,8 @@ class ProfilesManager:
     def update_steps_for_profile(self, name: str, steps: dict) -> None:
         profile = self.profiles[name]
         profile["steps"] = steps
+
+    def rename_profile(self, original_name: str, new_name: str) -> None:
+        self.__profiles[new_name] = self.__profiles[original_name]
+        del self.__profiles[original_name]
+

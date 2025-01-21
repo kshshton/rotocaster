@@ -3,14 +3,8 @@ from src.types.step_struct import StepStruct
 
 class StepsManager:
     def __init__(self):
-        self.__steps: dict[dict[dict]] = {}
+        self.__steps: dict[str, dict] = {}
         self.__active_step: str = None
-
-    def get_steps(self, profile_name: str) -> dict:
-        return self.__steps.get(profile_name, {})
-    
-    def update_steps(self, profile_name: str, steps: dict) -> None:
-        self.__steps[profile_name] = steps
 
     @property
     def active_step(self) -> str:
@@ -24,6 +18,12 @@ class StepsManager:
     def remove_active_step(self) -> None:
         del self.__active_step
     
+    def get_steps(self, profile_name: str) -> dict:
+        return self.__steps.get(profile_name, {})
+    
+    def update_steps(self, profile_name: str, steps: dict) -> None:
+        self.__steps[profile_name] = steps
+
     def get_active_step_content(self, profile_name: str) -> dict:
         return self.__steps[profile_name][self.__active_step]
 
@@ -64,4 +64,6 @@ class StepsManager:
 
     def first_step(self, profile_name: str) -> str:
         steps = self.sequence(profile_name)
-        return next(iter(steps), "")
+        first_step = next(iter(steps), "")
+        self.__active_step = first_step
+        return first_step
