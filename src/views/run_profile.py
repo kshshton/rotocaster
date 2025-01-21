@@ -21,7 +21,7 @@ class RunProfile:
                 geometry="300x100"
             )
             UtilityFunctions.center_window(master=window)
-            profile_content = self.__settings.profiles_manager.active_profile_content
+            profile_content = self.__settings.profiles_manager.active_profile_steps
 
             self.__settings.engine.current_profile_speed = profile_content.get("speed")
             self.__settings.engine.operation(SpeedOperator.INCREMENT)

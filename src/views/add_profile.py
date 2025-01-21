@@ -50,6 +50,7 @@ class AddProfile:
                 ),
                 ManageSteps(
                     master=frame, 
+                    combobox=combobox,
                     settings=self.__settings,
                 )
             )
@@ -65,8 +66,8 @@ class AddProfile:
                     combobox=combobox,
                 ),
                 self.__settings.save_profile_settings(
-                    value=ProfileStruct(
-                        steps=self.__settings.profiles_manager.active_profile_content.get("steps", {}),
+                    profile=ProfileStruct(
+                        steps=self.__settings.profiles_manager.active_profile_steps,
                     )
                 ),
                 UtilityFunctions.close_window(master=window),

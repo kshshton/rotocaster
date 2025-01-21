@@ -17,8 +17,8 @@ class Settings:
         self.profiles_manager.profiles = self.file.load()
         self.engine = Engine()
 
-    def save_profile_settings(self, value: ProfileStruct) -> None:
-        self.profiles_manager.active_profile_content = value.to_dict()
+    def save_profile_settings(self, profile: ProfileStruct) -> None:
+        self.profiles_manager.active_profile_steps = profile.to_dict()
         self.file.update(self.profiles_manager.profiles)
 
     def close_window_and_reset_speed(self, master: CTkToplevel) -> None:

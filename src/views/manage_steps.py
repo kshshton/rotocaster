@@ -34,17 +34,12 @@ class ManageSteps:
 
     def __render(self, master: CTk, combobox: CustomComboBox) -> None:
         active_profile = self.__settings.profiles_manager.active_profile
-        active_profile_content = self.__settings.profiles_manager.active_profile_content
-        self.__settings.steps_manager.update_steps(
-            profile_name=active_profile,
-            steps=active_profile_content.get("steps", {})
-        )
         vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
 
         window = CustomTopLevel(
             master=master,
             title=f"Profil: {active_profile} - Kroki",
-            geometry="360x340",
+            geometry="380x340",
         )
         frame = CustomFrame(master=window)
 
