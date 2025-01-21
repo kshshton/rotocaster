@@ -34,6 +34,10 @@ class ManageSteps:
 
     def __render(self, master: CTk, combobox: CustomComboBox) -> None:
         active_profile = self.__settings.profiles_manager.active_profile
+        active_profile_steps = self.__settings.profiles_manager.active_profile_steps
+        self.__settings.steps_manager.update_steps(profile_name=active_profile, steps=active_profile_steps)
+        last_step_number = self.__settings.steps_manager.last_step_number(profile_name=active_profile)
+        self.__settings.steps_manager.active_step = last_step_number
         vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
 
         window = CustomTopLevel(
@@ -60,8 +64,8 @@ class ManageSteps:
             master=frame,
             state="readonly",
             values=self.__settings.steps_manager.sequence(profile_name=active_profile),
-            content=self.__settings.steps_manager.first_step(profile_name=active_profile),
             callback=self.__settings.steps_manager.select_step,
+            content=last_step_number,
         )
         steps_combobox.place(relx=self.__relx, rely=steps_position, anchor="center")
 

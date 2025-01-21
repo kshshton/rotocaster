@@ -62,8 +62,7 @@ class StepsManager:
         except:
             return []
 
-    def first_step(self, profile_name: str) -> str:
-        steps = self.sequence(profile_name)
-        first_step = next(iter(steps), "")
-        self.__active_step = first_step
-        return first_step
+    def last_step_number(self, profile_name: str) -> str:
+        steps = self.sequence(profile_name)[::-1]
+        last_step = next(iter(steps), "")
+        return last_step
