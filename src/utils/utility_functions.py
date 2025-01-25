@@ -1,16 +1,16 @@
 from tkinter import IntVar, StringVar
 
-from customtkinter import CTkToplevel
+from customtkinter import CTk, CTkToplevel
 
 
 class UtilityFunctions:
     @staticmethod
-    def center_window(master) -> None:
+    def center_window(master: CTk) -> None:
         screen_width = master.winfo_screenwidth()
         screen_height = master.winfo_screenheight()
 
-        x = (screen_width - master.winfo_reqwidth()) // 2 - 100
-        y = (screen_height - master.winfo_reqheight()) // 2.25
+        x = int((screen_width - master.winfo_reqwidth()) / 2)
+        y = int((screen_height - master.winfo_reqheight()) / 2)
 
         master.geometry(f"+{x}+{y}")
 

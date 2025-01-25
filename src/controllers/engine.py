@@ -1,4 +1,4 @@
-from typing import Literal
+from threading import Event, Thread
 
 from customtkinter import CTk
 
@@ -7,9 +7,10 @@ from src.types.speed_operator import SpeedOperator
 
 
 class Engine(CTk):
-    def __init__(self, refresh_rate: int = 100) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.__refresh_rate = refresh_rate
+        self.__wait: int = 0.1
+        self.__event = Event()
         self.__stop: bool = False
         self.current_profile_speed: int = 0
         self.speed: int = 0
@@ -19,26 +20,36 @@ class Engine(CTk):
         if self.speed == 0:
             return self.speed
         self.speed -= 1
-        self.after(ms=self.__refresh_rate, func=self.__reset_value)
+        self.__event.wait(self.__wait)
+        self.__reset_value()
 
     def __reach_current_profile_value(self) -> None:
         if self.speed == self.current_profile_speed or self.__stop:
             return self.speed
         self.speed += 1
-        self.after(ms=self.__refresh_rate, func=self.__reach_current_profile_value)
+        self.__event.wait(self.__wait)
+        self.__reach_current_profile_value()
+
+    def listen_output(self) -> None:
+        while True:
+            print({"speed": self.speed, "direction": self.direction})
+            self.__event.wait(self.__wait)
+
+    def run(self) -> None:
+        thread = Thread(target=self.listen_output)
+        thread.start()
 
     def update_direction(self, direction: str):
         self.direction = direction
 
-    def listen_value(self) -> None:
-        print({"speed": self.speed, "direction": self.direction})
-        self.after(ms=self.__refresh_rate, func=self.listen_value)
-
     def operation(self, operator: SpeedOperator) -> None:
+        thread = None
         match operator:
             case SpeedOperator.INCREMENT:
                 self.__stop = False
-                self.__reach_current_profile_value()
+                thread = Thread(target=self.__reach_current_profile_value)
+                thread.start()
             case SpeedOperator.DECREMENT:
                 self.__stop = True
-                self.__reset_value()
+                thread = Thread(target=self.__reset_value)
+                thread.start()
