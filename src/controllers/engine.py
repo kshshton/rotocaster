@@ -37,17 +37,14 @@ class Engine(CTk):
         self.__event.wait(self.__wait)
         self.__decrement_to_current_profile_value()
 
-    def listen_output(self) -> None:
+    def __listen_output(self) -> None:
         while True:
             print({"speed": self.speed, "direction": self.direction})
             self.__event.wait(self.__wait)
 
     def run(self) -> None:
-        thread = Thread(target=self.listen_output)
+        thread = Thread(target=self.__listen_output)
         thread.start()
-
-    def update_direction(self, direction: str):
-        self.direction = direction
 
     def operation(self, operator: SpeedOperator) -> None:
         thread = None

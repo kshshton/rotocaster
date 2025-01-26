@@ -21,6 +21,9 @@ class RunManualMode:
 
     def __manual_to_output_speed(self, *args: any) -> None:
         self.__settings.engine.speed = self.__manual_speed.get()
+
+    def __update_direction(self, direction: str) -> None:
+        self.__settings.engine.direction = direction
     
     def __render(self, master) -> None:
         window = CustomTopLevel(
@@ -76,7 +79,7 @@ class RunManualMode:
             master=frame, 
             values=[AxisDirection.LEFT.value, AxisDirection.RIGHT.value],
             content=self.__settings.engine.direction,
-            callback=self.__settings.engine.update_direction,
+            callback=self.__update_direction,
         )
         direction_combobox.place(relx=self.__relx, rely=direction_position, anchor="center")
 
