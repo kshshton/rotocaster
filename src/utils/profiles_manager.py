@@ -72,10 +72,6 @@ class ProfilesManager:
         self.active_profile = first_profile
         return first_profile
 
-    def update_steps_for_profile(self, profile_name: str, steps: dict) -> None:
-        profile = self.profiles[profile_name]
-        profile["steps"] = steps
-
     def rename_profile(self, original_name: str, new_name: str) -> None:
         self.__profiles[new_name] = self.__profiles[original_name]
         del self.__profiles[original_name]

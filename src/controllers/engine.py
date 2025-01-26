@@ -23,12 +23,19 @@ class Engine(CTk):
         self.__event.wait(self.__wait)
         self.__reset_value()
 
-    def __reach_current_profile_value(self) -> None:
+    def __increment_to_current_profile_value(self) -> None:
         if self.speed == self.current_profile_speed or self.__stop:
             return self.speed
         self.speed += 1
         self.__event.wait(self.__wait)
-        self.__reach_current_profile_value()
+        self.__increment_to_current_profile_value()
+
+    def __decrement_to_current_profile_value(self) -> None:
+        if self.speed == self.current_profile_speed or self.__stop:
+            return self.speed
+        self.speed -= 1
+        self.__event.wait(self.__wait)
+        self.__decrement_to_current_profile_value()
 
     def listen_output(self) -> None:
         while True:
@@ -47,9 +54,13 @@ class Engine(CTk):
         match operator:
             case SpeedOperator.INCREMENT:
                 self.__stop = False
-                thread = Thread(target=self.__reach_current_profile_value)
+                thread = Thread(target=self.__increment_to_current_profile_value)
                 thread.start()
             case SpeedOperator.DECREMENT:
+                self.__stop = False
+                thread = Thread(target=self.__decrement_to_current_profile_value)
+                thread.start()
+            case SpeedOperator.RESET:
                 self.__stop = True
                 thread = Thread(target=self.__reset_value)
                 thread.start()

@@ -22,5 +22,5 @@ class Settings:
         self.file.update(self.profiles_manager.profiles)
 
     def close_window_and_reset_speed(self, master: CTkToplevel) -> None:
-        self.engine.operation(SpeedOperator.DECREMENT)
+        self.engine.operation(SpeedOperator.RESET)
         UtilityFunctions.close_window(master)

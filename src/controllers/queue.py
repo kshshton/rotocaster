@@ -16,12 +16,19 @@ class Queue:
             steps=self.__active_profile_steps
         )
         self.__steps = iter(self.__active_profile_steps.values())
+        self.__previous_speed: int = 0
 
     def __next__(self):
         step = next(self.__steps)
         self.__settings.engine.current_profile_speed = step["speed"]
-        self.__settings.engine.update_direction(direction=step["direction"])
-        self.__settings.engine.operation(SpeedOperator.INCREMENT)
+        self.__settings.engine.direction = step["direction"]
+
+        if self.__previous_speed > step["speed"]:
+            self.__settings.engine.operation(SpeedOperator.DECREMENT)
+        else:
+            self.__settings.engine.operation(SpeedOperator.INCREMENT)
+        self.__previous_speed = step["speed"]
+
         return Timer(
             master=self.__master,
             start_time=step["time"],

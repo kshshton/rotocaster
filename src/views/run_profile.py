@@ -23,11 +23,15 @@ class RunProfile:
     def __on_complete(self):
         try:
             timer = next(self.__queue)
+            timer.on_complete = lambda: self.__on_complete()
             self.__render(self.__master, timer=timer)
         except:
-            self.__settings.close_window_and_reset_speed(self.__window)
-        
+            self.__settings.close_window_and_reset_speed(master=self.__window)
+
     def __render(self, master, timer: Timer) -> None:
+        if self.__window:
+            UtilityFunctions.close_window(master=self.__window)
+
         self.__window = CustomTopLevel(
             master=master,
             title=f"Uruchomiono: {self.__settings.profiles_manager.active_profile}",
