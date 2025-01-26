@@ -51,6 +51,15 @@ class StepsManager:
 
     def delete_step(self, profile_name: str, step: str) -> None:
         del self.__steps[profile_name][step]
+
+    def reset_numbers(self, profile_name: str) -> None:
+        steps = list(self.__steps[profile_name].values())
+        temp_dict = {}
+
+        for index in range(len(steps)):
+            temp_dict[str(index + 1)] = steps[index]
+
+        self.__steps[profile_name] = temp_dict
     
     def select_step(self, step: str) -> None:
         self.__active_step = step
