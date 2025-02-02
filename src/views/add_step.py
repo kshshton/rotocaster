@@ -33,6 +33,7 @@ class AddStep:
             title=f"Profil: {active_profile} - Krok: {active_step}",
             geometry="320x300",
         )
+        window.overrideredirect(True)
         frame = CustomFrame(master=window)
 
         self.__speed = IntVar()
