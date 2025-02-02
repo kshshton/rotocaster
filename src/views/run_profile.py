@@ -19,6 +19,10 @@ class RunProfile:
         self.__timer = next(self.__queue)
         self.__timer.on_complete=lambda: self.__on_complete()
         self.__render(self.__master, timer=self.__timer)
+        self.__sound: bool = True
+
+    def __turn_off_sound_effect(self) -> None:
+        self.__sound = False
 
     def __on_complete(self):
         try:
@@ -27,7 +31,8 @@ class RunProfile:
             self.__render(self.__master, timer=timer)
         except:
             self.__settings.close_window_and_reset_speed(master=self.__window)
-            UtilityFunctions.sound_effect()
+            if self.__sound:
+                UtilityFunctions.sound_effect()
 
     def __render(self, master, timer: Timer) -> None:
         if self.__window:
@@ -49,7 +54,8 @@ class RunProfile:
             command=lambda: (
                 timer.stop(),
                 self.__queue.stop(),
-                self.__settings.close_window_and_reset_speed(self.__window)
+                self.__settings.close_window_and_reset_speed(self.__window),
+                self.__turn_off_sound_effect(),
             )
         )
         stop_button.place(relx=0.5, rely=0.5, anchor="center")
