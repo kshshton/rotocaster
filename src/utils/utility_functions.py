@@ -1,3 +1,4 @@
+import winsound
 from tkinter import IntVar, StringVar
 
 from customtkinter import CTk, CTkToplevel
@@ -35,3 +36,6 @@ class UtilityFunctions:
     @staticmethod
     def close_window(master: CTkToplevel) -> None:        
         master.destroy()
+
+    def sound_effect(duration=2000, freq=440) -> None:
+        winsound.Beep(freq, duration)

@@ -27,6 +27,7 @@ class RunProfile:
             self.__render(self.__master, timer=timer)
         except:
             self.__settings.close_window_and_reset_speed(master=self.__window)
+            UtilityFunctions.sound_effect()
 
     def __render(self, master, timer: Timer) -> None:
         if self.__window:
