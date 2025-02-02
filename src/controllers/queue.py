@@ -21,16 +21,17 @@ class Queue:
     def __next__(self):
         step = next(self.__steps)
         self.__settings.engine.current_profile_speed = step["speed"]
-        self.__settings.engine.direction = step["direction"]
 
         if self.__previous_direction and self.__previous_direction != step["direction"]:
             self.__settings.engine.reset(wait_until_end=True)
             self.__previous_speed = 0
 
+        self.__settings.engine.direction = step["direction"]
+
         if self.__previous_speed > self.__settings.engine.current_profile_speed:
-            self.__settings.engine.decrement()
+            self.__settings.engine.decrement(wait_until_end=True)
         else:
-            self.__settings.engine.increment()
+            self.__settings.engine.increment(wait_until_end=True)
 
         self.__previous_speed = step["speed"]
         self.__previous_direction = step["direction"]
