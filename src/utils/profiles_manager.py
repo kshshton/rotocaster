@@ -36,9 +36,9 @@ class ProfilesManager:
 
     def create_profile(self, profile_name: str) -> None:
         profiles = self.list_profiles()
-        if profile_name in profiles:
+        if profile_name in profiles or profile_name == "":
             return
-        if "" in self.list_profiles():
+        if "" in profiles:
             self.delete_profile("")
         self.__profiles[profile_name] = {}
 

@@ -15,5 +15,5 @@ class CustomTopLevel(CTkToplevel):
         self.title(title)
         self.transient(master)
         self.geometry(geometry)
-        self.overrideredirect(True)
+        self.protocol("WM_DELETE_WINDOW", lambda: None)
         UtilityFunctions.center_window(self)
