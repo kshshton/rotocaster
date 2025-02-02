@@ -1,3 +1,5 @@
+from typing import Optional
+
 from customtkinter import CTk, CTkComboBox
 
 
@@ -7,7 +9,7 @@ class CustomComboBox(CTkComboBox):
         master: CTk,
         values: list,
         content: any,
-        callback: callable,
+        callback: Optional[callable] = None,
         padding={"padx": 10, "pady": 10},
         anchor="center",
         **kwargs,

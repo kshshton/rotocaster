@@ -7,8 +7,8 @@ from src.utils.utility_functions import UtilityFunctions
 from src.views.add_profile import AddProfile
 from src.views.delete_profile import DeleteProfile
 from src.views.manage_steps import ManageSteps
-from src.views.run_manual_mode import RunManualMode
 from src.views.run_profile import RunProfile
+from src.views.select_direction import SelectDirection
 
 
 class App(CTk):
@@ -33,7 +33,7 @@ class App(CTk):
         CustomButton(master=self, text="Dodaj profil", callback=lambda: AddProfile(master=self, combobox=self.__combobox, settings=self.__settings))
         CustomButton(master=self, text="Usuń profil", callback=lambda: DeleteProfile(combobox=self.__combobox, settings=self.__settings))
         CustomButton(master=self, text="Uruchom profil", callback=lambda: RunProfile(master=self, settings=self.__settings))
-        CustomButton(master=self, text="Uruchom tryb ręczny", callback=lambda: RunManualMode(master=self, settings=self.__settings))
+        CustomButton(master=self, text="Uruchom tryb ręczny", callback=lambda: SelectDirection(master=self, settings=self.__settings))
 
         self.__settings.engine.run()
         self.mainloop()

@@ -21,9 +21,6 @@ class RunManualMode:
 
     def __manual_to_output_speed(self, *args: any) -> None:
         self.__settings.engine.speed = self.__manual_speed.get()
-
-    def __update_direction(self, direction: str) -> None:
-        self.__settings.engine.direction = direction
     
     def __render(self, master) -> None:
         window = CustomTopLevel(
@@ -69,19 +66,6 @@ class RunManualMode:
 
         slider = CTkSlider(master=frame, from_=0, to=100, variable=self.__manual_speed)
         slider.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
-
-        direction_position = next(vertical_position)
-
-        direction_label = CTkLabel(master=frame, text="Kierunek:")
-        direction_label.place(relx=self.__relx / 4, rely=direction_position, anchor="center")
-
-        direction_combobox = CustomComboBox(
-            master=frame, 
-            values=[AxisDirection.LEFT.value, AxisDirection.RIGHT.value],
-            content=self.__settings.engine.direction,
-            callback=self.__update_direction,
-        )
-        direction_combobox.place(relx=self.__relx, rely=direction_position, anchor="center")
 
         stop_button = CTkButton(
             master=frame,
