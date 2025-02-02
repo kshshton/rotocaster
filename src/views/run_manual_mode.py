@@ -1,11 +1,9 @@
 from customtkinter import (CTk, CTkButton, CTkEntry, CTkLabel, CTkSlider,
                            IntVar, StringVar)
 
-from src.components.custom_combobox import CustomComboBox
 from src.components.custom_frame import CustomFrame
 from src.components.custom_top_level import CustomTopLevel
 from src.controllers.stopwatch import Stopwatch
-from src.types.axis_direction import AxisDirection
 from src.utils.settings import Settings
 from src.utils.utility_functions import UtilityFunctions
 from src.utils.vertical_position import VerticalPosition

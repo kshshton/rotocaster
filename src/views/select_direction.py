@@ -45,8 +45,8 @@ class SelectDirection:
             text="Zapisz",
             command=lambda: (
                 self.__update_direction(direction_combobox.get()),
-                RunManualMode(master=master, settings=self.__settings),
                 UtilityFunctions.close_window(master=window),
+                RunManualMode(master=master, settings=self.__settings),
             )
         )
         save_button.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
