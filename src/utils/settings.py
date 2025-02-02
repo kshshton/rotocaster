@@ -2,7 +2,6 @@ from customtkinter import CTkToplevel
 
 from src.controllers.engine import Engine
 from src.types.profile_struct import ProfileStruct
-from src.types.speed_operator import SpeedOperator
 from src.utils.profiles_file import ProfilesFile
 from src.utils.profiles_manager import ProfilesManager
 from src.utils.steps_manager import StepsManager
@@ -22,5 +21,5 @@ class Settings:
         self.file.update(self.profiles_manager.profiles)
 
     def close_window_and_reset_speed(self, master: CTkToplevel) -> None:
-        self.engine.operation(SpeedOperator.RESET)
+        self.engine.reset()
         UtilityFunctions.close_window(master)
