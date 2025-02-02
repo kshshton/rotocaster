@@ -15,4 +15,5 @@ class CustomTopLevel(CTkToplevel):
         self.title(title)
         self.transient(master)
         self.geometry(geometry)
+        self.overrideredirect(True)
         UtilityFunctions.center_window(self)
