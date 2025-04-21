@@ -1,3 +1,5 @@
+import logging
+import socket
 import winsound
 from tkinter import IntVar, StringVar
 
@@ -34,8 +36,20 @@ class UtilityFunctions:
             speed.set(0)
 
     @staticmethod
-    def close_window(master: CTkToplevel) -> None:        
+    def close_window(master: CTkToplevel) -> None:
         master.destroy()
 
     def sound_effect(duration=2000, freq=440) -> None:
         winsound.Beep(freq, duration)
+
+    @staticmethod
+    def send_message_to_board(message: str) -> None:
+        pico_ip = '192.168.4.1'  # The IP address of the Access Point
+        port = 12345
+        try:
+            # Create a UDP socket
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+                s.sendto(message.encode('utf-8'), (pico_ip, port))
+                logging.info(f"Sent {message} message to Pico W at {pico_ip}")
+        except Exception as e:
+            logging.error(f"Error: {e}")

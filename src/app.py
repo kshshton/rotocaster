@@ -1,3 +1,6 @@
+import json
+from threading import Thread
+
 from customtkinter import CTk, CTkLabel
 
 from src.components.custom_button import CustomButton
@@ -13,8 +16,8 @@ from src.views.select_direction import SelectDirection
 
 class App(CTk):
     def __init__(self, title: str) -> None:
-        super().__init__()        
-        self.geometry("300x300")
+        super().__init__()
+        self.geometry("300x350")
         self.title(title)
         UtilityFunctions.center_window(self)
         self.__settings = Settings()
@@ -29,11 +32,38 @@ class App(CTk):
             callback=self.__settings.profiles_manager.select_profile,
         )
 
-        CustomButton(master=self, text="Zarządzaj krokami", callback=lambda: ManageSteps(master=self, combobox=self.__combobox, settings=self.__settings))
-        CustomButton(master=self, text="Dodaj profil", callback=lambda: AddProfile(master=self, combobox=self.__combobox, settings=self.__settings))
-        CustomButton(master=self, text="Usuń profil", callback=lambda: DeleteProfile(combobox=self.__combobox, settings=self.__settings))
-        CustomButton(master=self, text="Uruchom profil", callback=lambda: RunProfile(master=self, settings=self.__settings))
-        CustomButton(master=self, text="Uruchom tryb ręczny", callback=lambda: SelectDirection(master=self, settings=self.__settings))
+        CustomButton(master=self, text="Zarządzaj krokami", callback=lambda: ManageSteps(
+            master=self, combobox=self.__combobox, settings=self.__settings))
+        CustomButton(master=self, text="Dodaj profil", callback=lambda: AddProfile(
+            master=self, combobox=self.__combobox, settings=self.__settings))
+        CustomButton(master=self, text="Usuń profil", callback=lambda: DeleteProfile(
+            combobox=self.__combobox, settings=self.__settings))
+        CustomButton(master=self, text="Uruchom profil", callback=lambda: RunProfile(
+            master=self, settings=self.__settings))
+        CustomButton(master=self, text="Uruchom tryb ręczny", callback=lambda: SelectDirection(
+            master=self, settings=self.__settings))
+        CustomButton(master=self, text="Zaktualizuj połączenie",
+                     callback=lambda: self.update_connetion_settings())
 
-        self.__settings.engine.run()
+        self.stream_output_to_board()
         self.mainloop()
+
+    def __engine_daemon(self) -> None:
+        engine = self.__settings.engine
+        message = None
+        while True:
+            message = f"engine:{engine.direction};{engine.speed}"
+            UtilityFunctions.send_message_to_board(message)
+            engine.event.wait(engine.delay)
+
+    def update_connetion_settings(self) -> None:
+        with open(f"connection_settings.json", "r") as file:
+            self.config = json.load(file)
+        self.pins = self.config["pins"]
+        self.ports = self.config["ports"]
+        message = f"settings:STBY={self.pins['STBY']};AIN1={self.pins['AIN1']};AIN2={self.pins['AIN2']};PWMA={self.pins['PWMA']}"
+        UtilityFunctions.send_message_to_board(message)
+
+    def stream_output_to_board(self) -> None:
+        thread = Thread(target=self.__engine_daemon)
+        thread.start()

@@ -14,6 +14,6 @@ class DeleteProfile:
             del self.__settings.profiles_manager.active_profile
             combobox.configure(values=self.__settings.profiles_manager.list_profiles())
             combobox.set(self.__settings.profiles_manager.first_profile())
-            self.__settings.file.update(self.__settings.profiles_manager.profiles)
+            self.__settings.profiles_file.update(self.__settings.profiles_manager.profiles)
         except AssertionError:
             pass
