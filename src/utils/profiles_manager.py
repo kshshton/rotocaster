@@ -4,75 +4,57 @@ class ProfilesManager:
         self.__profiles: dict[str, dict] = {}
         self.__active_profile: str = None
 
-    @property
-    def profiles(self) -> dict:
+    def get_profiles(self) -> dict:
         return self.__profiles
 
-    @profiles.setter
-    def profiles(self, profiles: dict) -> None:
+    def set_profiles(self, profiles: dict) -> None:
         self.__profiles = profiles
 
-    @property
-    def active_profile(self) -> None:
+    def get_active_profile(self) -> str:
         return self.__active_profile
 
-    @active_profile.setter
-    def active_profile(self, name: str) -> None:
+    def set_active_profile(self, name: str) -> None:
         self.__active_profile = name
 
-    @active_profile.deleter
-    def active_profile(self) -> None:
-        if len(self.list_profiles()) == 1:
-            self.create_profile("")
-        del self.__profiles[self.active_profile]
+    def delete_active_profile(self) -> None:
+        del self.__profiles[self.__active_profile]
 
-    @property
-    def active_profile_steps(self) -> dict:
-        return self.__profiles[self.active_profile].get("steps", {})
+    def get_active_profile_steps(self) -> dict:
+        return self.__profiles[self.__active_profile].get("steps", {})
 
-    @active_profile_steps.setter
-    def active_profile_steps(self, content: dict) -> None:
-        self.__profiles[self.active_profile]["steps"] = content
+    def set_active_profile_steps(self, content: dict) -> None:
+        self.__profiles[self.__active_profile]["steps"] = content
 
     def create_profile(self, profile_name: str) -> None:
         profiles = self.list_profiles()
-        if profile_name in profiles or profile_name == "":
-            return
-        if "" in profiles:
-            self.delete_profile("")
+        assert profile_name not in profiles, "Profile already exist!"
         self.__profiles[profile_name] = {}
 
     def is_profile_active(self) -> bool:
-        return bool(self.active_profile)
+        return bool(self.__active_profile)
 
-    def get_profile(self, name: str) -> dict:
+    def get_profile_content(self, name: str) -> dict:
         return self.__profiles[name]
 
-    def get_active_profile(self) -> dict:
-        return self.__profiles[self.active_profile]
+    def get_active_profile_content(self) -> dict:
+        return self.__profiles[self.__active_profile]
 
     def delete_profile(self, name: str) -> None:
         del self.__profiles[name]
 
-    def select_profile(self, name: str) -> None:
-        self.active_profile = name
-
     def list_profiles(self) -> list:
-        try:
-            profiles = list(self.__profiles.keys())
-            if len(profiles) > 1 and "" in profiles:
-                del self.__profiles[""]
-            return sorted(profiles)
-        except:
-            return []
+        profiles = list(self.__profiles.keys())
+        return sorted(profiles)
 
     def first_profile(self) -> str:
-        profiles = self.list_profiles()
-        first_profile = next(iter(profiles), "")
-        self.active_profile = first_profile
-        return first_profile
+        try:
+            profiles = self.list_profiles()
+            first_profile = sorted(profiles)[0]
+            self.__active_profile = first_profile
+            return first_profile
+        except:
+            return
 
     def rename_profile(self, original_name: str, new_name: str) -> None:
         self.__profiles[new_name] = self.__profiles[original_name]
         del self.__profiles[original_name]
-

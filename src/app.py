@@ -29,7 +29,9 @@ class App(CTk):
             state="readonly",
             values=self.__settings.profiles_manager.list_profiles(),
             content=self.__settings.profiles_manager.first_profile(),
-            callback=self.__settings.profiles_manager.select_profile,
+            callback=lambda name: self.__settings.profiles_manager.set_active_profile(
+                name
+            ),
         )
 
         CustomButton(master=self, text="Zarządzaj krokami", callback=lambda: ManageSteps(

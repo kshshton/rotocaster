@@ -19,12 +19,13 @@ class RunManualMode:
 
     def __manual_to_output_speed(self, *args: any) -> None:
         self.__settings.engine.speed = self.__manual_speed.get()
-    
+
     def __render(self, master) -> None:
         window = CustomTopLevel(
             master=master,
             title="Uruchomiono: tryb ręczny",
             geometry="320x240",
+            close_window_button_blocked=True
         )
         frame = CustomFrame(master=window)
         vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
@@ -51,19 +52,24 @@ class RunManualMode:
         time_label = CTkLabel(master=frame)
         time_label.place(relx=0.025, rely=0)
 
-        timer = Stopwatch(callback=lambda time: time_label.configure(text=time))
+        timer = Stopwatch(
+            callback=lambda time: time_label.configure(text=time))
         timer.start()
 
         speed_position = next(vertical_position)
 
         speed_label = CTkLabel(master=frame, text="Prędkość:")
-        speed_label.place(relx=self.__relx / 4, rely=speed_position, anchor="center")
+        speed_label.place(relx=self.__relx / 4,
+                          rely=speed_position, anchor="center")
 
-        speed_box = CTkEntry(master=frame, textvariable=self.__manual_speed_text)
+        speed_box = CTkEntry(
+            master=frame, textvariable=self.__manual_speed_text)
         speed_box.place(relx=self.__relx, rely=speed_position, anchor="center")
 
-        slider = CTkSlider(master=frame, from_=0, to=100, variable=self.__manual_speed)
-        slider.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
+        slider = CTkSlider(master=frame, from_=0, to=100,
+                           variable=self.__manual_speed)
+        slider.place(relx=self.__relx, rely=next(
+            vertical_position), anchor="center")
 
         stop_button = CTkButton(
             master=frame,
@@ -71,8 +77,9 @@ class RunManualMode:
             command=lambda: (
                 timer.stop(),
                 self.__settings.close_window_and_reset_speed(window)
-            )   
+            )
         )
-        stop_button.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
+        stop_button.place(relx=self.__relx, rely=next(
+            vertical_position), anchor="center")
 
-        self.__settings.engine.speed = self.__manual_speed.get()        
+        self.__settings.engine.speed = self.__manual_speed.get()

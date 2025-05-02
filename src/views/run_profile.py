@@ -17,7 +17,7 @@ class RunProfile:
             settings=self.__settings
         )
         self.__timer = next(self.__queue)
-        self.__timer.on_complete=lambda: self.__on_complete()
+        self.__timer.on_complete = lambda: self.__on_complete()
         self.__render(self.__master, timer=self.__timer)
         self.__sound: bool = True
 
@@ -40,13 +40,14 @@ class RunProfile:
 
         self.__window = CustomTopLevel(
             master=master,
-            title=f"Uruchomiono: {self.__settings.profiles_manager.active_profile}",
-            geometry="300x100"
+            title=f"Uruchomiono: {self.__settings.profiles_manager.get_active_profile()}",
+            geometry="300x100",
+            close_window_button_blocked=True
         )
         UtilityFunctions.center_window(master=self.__window)
 
         time_label = CTkLabel(master=self.__window)
-        time_label.place(relx=0.025, rely=0)            
+        time_label.place(relx=0.025, rely=0)
 
         stop_button = CTkButton(
             master=self.__window,

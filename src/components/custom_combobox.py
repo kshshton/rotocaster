@@ -21,4 +21,4 @@ class CustomComboBox(CTkComboBox):
             **kwargs,
         )
         self.pack(**padding, anchor=anchor)
-        self.set(content)
+        self.set(content or "")

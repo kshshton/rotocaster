@@ -17,9 +17,11 @@ class AddProfile:
         self.__render(master, combobox)
 
     def __add_profile(self, profile_name: str, combobox: CustomComboBox) -> None:
+        assert profile_name != "", "Profile can't be empty!"
         self.__settings.profiles_manager.create_profile(profile_name)
-        self.__settings.profiles_manager.active_profile = profile_name
-        combobox.configure(values=self.__settings.profiles_manager.list_profiles())
+        self.__settings.profiles_manager.set_active_profile(profile_name)
+        combobox.configure(
+            values=self.__settings.profiles_manager.list_profiles())
         combobox.set(profile_name)
 
     def __render(self, master: CTk, combobox: CustomComboBox) -> None:
@@ -32,10 +34,12 @@ class AddProfile:
         vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
 
         speed_label = CTkLabel(master=frame, text="Nazwa profilu:")
-        speed_label.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
+        speed_label.place(relx=self.__relx, rely=next(
+            vertical_position), anchor="center")
 
         entry_box = CTkEntry(master=frame)
-        entry_box.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
+        entry_box.place(relx=self.__relx, rely=next(
+            vertical_position), anchor="center")
 
         save_button = CTkButton(
             master=frame,
@@ -48,4 +52,5 @@ class AddProfile:
                 UtilityFunctions.close_window(master=window),
             )
         )
-        save_button.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
+        save_button.place(relx=self.__relx, rely=next(
+            vertical_position), anchor="center")

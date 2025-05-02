@@ -21,11 +21,12 @@ class AddStep:
         self.__render(master, combobox)
 
     def __render(self, master: CTk, combobox: CustomComboBox) -> None:
-        active_profile = self.__settings.profiles_manager.active_profile
+        active_profile = self.__settings.profiles_manager.get_active_profile()
         self.__settings.steps_manager.create_step(active_profile)
-        active_step = self.__settings.steps_manager.active_step
-        combobox.configure(values=self.__settings.steps_manager.sequence(active_profile))
-        combobox.set(self.__settings.steps_manager.active_step)
+        active_step = self.__settings.steps_manager.get_active_step()
+        combobox.configure(
+            values=self.__settings.steps_manager.sequence(active_profile))
+        combobox.set(self.__settings.steps_manager.get_active_step())
         vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
 
         window = CustomTopLevel(
@@ -53,27 +54,33 @@ class AddStep:
         )
 
         speed_label = CTkLabel(master=frame, text="Prędkość: ")
-        speed_label.place(relx=self.__relx / 4, rely=self.__rely, anchor="center")
+        speed_label.place(relx=self.__relx / 4,
+                          rely=self.__rely, anchor="center")
 
         speed_box = CTkEntry(master=frame, textvariable=self.__speed_text)
         speed_box.place(relx=self.__relx, rely=self.__rely, anchor="center")
 
-        slider = CTkSlider(master=frame, from_=0, to=100, variable=self.__speed)
-        slider.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
+        slider = CTkSlider(master=frame, from_=0,
+                           to=100, variable=self.__speed)
+        slider.place(relx=self.__relx, rely=next(
+            vertical_position), anchor="center")
 
         time_input = TimeInput(frame)
-        time_input.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
+        time_input.place(relx=self.__relx, rely=next(
+            vertical_position), anchor="center")
 
         direction_position = next(vertical_position)
 
         direction_label = CTkLabel(master=frame, text="Kierunek:")
-        direction_label.place(relx=self.__relx / 4, rely=direction_position, anchor="center")
+        direction_label.place(relx=self.__relx / 4,
+                              rely=direction_position, anchor="center")
 
         direction_combobox = CTkComboBox(
-            master=frame, 
+            master=frame,
             values=[AxisDirection.LEFT.value, AxisDirection.RIGHT.value]
         )
-        direction_combobox.place(relx=self.__relx, rely=direction_position, anchor="center")
+        direction_combobox.place(
+            relx=self.__relx, rely=direction_position, anchor="center")
 
         save_button = CTkButton(
             master=frame,
@@ -82,12 +89,13 @@ class AddStep:
                 self.__settings.steps_manager.update_active_step_content(
                     profile_name=active_profile,
                     content=StepStruct(
-                        speed=self.__speed.get(), 
-                        time=str(time_input), 
+                        speed=self.__speed.get(),
+                        time=str(time_input),
                         direction=direction_combobox.get(),
-                    )
+                    ).to_dict()
                 ),
                 UtilityFunctions.close_window(master=window),
             )
         )
-        save_button.place(relx=self.__relx, rely=next(vertical_position), anchor="center")
+        save_button.place(relx=self.__relx, rely=next(
+            vertical_position), anchor="center")
