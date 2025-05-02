@@ -6,9 +6,9 @@ class ProfilesFile:
     def __init__(self, filename: str) -> None:
         self.filename = filename
         self.create()
-        
+
     def create(self) -> None:
-        if not os.path.exists(self.filename):
+        if not os.path.exists(f"{self.filename}.json"):
             with open(f"{self.filename}.json", "w") as file:
                 json.dump({"profiles": {}}, file, indent=4)
 
