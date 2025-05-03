@@ -19,6 +19,8 @@ class Engine(CTk):
     def __reset_value(self) -> None:
         if self.speed == 0:
             return self.speed
+        elif self.speed > 10:
+            self.speed -= int(self.speed * 0.1)
         self.speed -= 1
         self.event.wait(self.delay)
         self.__reset_value()
@@ -26,14 +28,20 @@ class Engine(CTk):
     def __increment_to_current_profile_value(self) -> None:
         if self.speed == self.current_profile_speed or self.__stop:
             return self.speed
-        self.speed += 1
+        elif self.current_profile_speed - self.speed > self.current_profile_speed // 2:
+            self.speed += int(self.current_profile_speed * 0.1)
+        else:
+            self.speed += 1
         self.event.wait(self.delay)
         self.__increment_to_current_profile_value()
 
     def __decrement_to_current_profile_value(self) -> None:
         if self.speed == self.current_profile_speed or self.__stop:
             return self.speed
-        self.speed -= 1
+        elif self.speed - self.current_profile_speed > self.current_profile_speed // 2:
+            self.speed -= int(self.current_profile_speed * 0.1)
+        else:
+            self.speed -= 1
         self.event.wait(self.delay)
         self.__decrement_to_current_profile_value()
 
