@@ -8,9 +8,7 @@ class Queue:
     def __init__(self, master: CTk, settings: Settings):
         self.__master = master
         self.__settings = settings
-        # TODO: check functionality
-        self.__active_profile_steps = self.__settings.steps_manager.get_steps()
-        self.__settings.steps_manager.set_steps(self.__active_profile_steps)
+        self.__active_profile_steps = self.__settings.profiles_manager.get_active_profile_steps()
         self.__steps = iter(self.__active_profile_steps.values())
         self.__previous_speed: int = 0
         self.__previous_direction: str = None
