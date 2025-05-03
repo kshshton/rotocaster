@@ -22,19 +22,23 @@ class EditProfile:
         self.__render(master, combobox)
 
     def __update_profile_name(self, entry_box_value: str, combobox: CustomComboBox):
+        if entry_box_value == "":
+            return
         active_profile = self.__settings.profiles_manager.get_active_profile_name()
-        if entry_box_value != active_profile and entry_box_value != "":
-            self.__settings.profiles_manager.rename_profile(
-                original_name=active_profile,
-                new_name=entry_box_value,
-            )
-            self.__settings.profiles_manager.set_active_profile_name(
-                entry_box_value
-            )
-            combobox.configure(
-                values=self.__settings.profiles_manager.list_profiles()
-            )
-            combobox.set(entry_box_value)
+        profiles = self.__settings.profiles_manager.list_profiles()
+        assert entry_box_value != active_profile, "Profile name is the same!"
+        assert entry_box_value not in profiles, "Profile name already exist!"
+        self.__settings.profiles_manager.rename_profile(
+            original_name=active_profile,
+            new_name=entry_box_value,
+        )
+        self.__settings.profiles_manager.set_active_profile_name(
+            entry_box_value
+        )
+        combobox.configure(
+            values=self.__settings.profiles_manager.list_profiles()
+        )
+        combobox.set(entry_box_value)
 
     def __render(self, master: CTk, combobox: CustomComboBox) -> None:
         assert self.__settings.profiles_manager.get_active_profile_name(

@@ -24,7 +24,8 @@ class AddStep:
     def __render(self, master: CTk, combobox: CustomComboBox) -> None:
         active_profile = self.__settings.profiles_manager.get_active_profile_name()
         new_step_number = str(
-            (int(self.__settings.steps_manager.last_step()) or 0) + 1)
+            int(self.__settings.steps_manager.last_step() or 0) + 1
+        )
         combobox.configure(
             values=self.__settings.steps_manager.list_steps())
         combobox.set(new_step_number)
