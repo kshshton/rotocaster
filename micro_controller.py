@@ -4,7 +4,7 @@ import network
 from machine import PWM, Pin
 
 ssid = "Pico_W_AP"
-password = "__declare_ur_password__"
+password = "12345678"
 
 ap = network.WLAN(network.AP_IF)
 ap.config(essid=ssid, password=password)
@@ -62,6 +62,7 @@ while True:
 
     if command == "engine":
         direction, speed = value.split(";")
+        print(speed)
         if direction == "LEWO":
             forward(speed)
         elif direction == "PRAWO":
