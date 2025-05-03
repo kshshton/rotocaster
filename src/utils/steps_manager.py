@@ -1,68 +1,68 @@
-from typing import Optional
+from typing import Optional, Union
 
 
 class StepsManager:
     def __init__(self):
-        self.__steps: dict[str, dict] = {}
-        self.__active_step: Optional[str] = None
+        self.__steps: dict[dict] = {}
+        self.__active_step_number: Optional[str] = None
 
-    def get_active_step(self) -> Optional[str]:
-        return self.__active_step
+    def get_active_step_number(self) -> Optional[str]:
+        return self.__active_step_number
 
-    def set_active_step(self, number: int) -> None:
-        self.__active_step = str(number) or None
+    def set_active_step_number(self, number: Optional[Union[int, str]]) -> None:
+        self.__active_step_number = str(number) or None
 
     def delete_active_step(self) -> None:
-        del self.__active_step
+        del self.__steps[self.__active_step_number]
 
-    def get_steps(self, profile_name: str) -> dict:
-        return self.__steps.get(profile_name, {})
+    def get_steps(self) -> dict:
+        return self.__steps
 
-    def update_steps(self, profile_name: str, steps: dict) -> None:
-        self.__steps[profile_name] = steps
+    def set_steps(self, profile_steps: dict) -> None:
+        """
+        Example: {'1': {'speed': 46, 'time': '0:0:5', 'direction': 'LEWO'}, '2': {'speed': 62, 'time': '0:0:5', 'direction': 'PRAWO'}}
+        """
+        self.__steps = profile_steps or {}
 
-    def get_active_step_content(self, profile_name: str) -> dict:
-        return self.__steps[profile_name][self.__active_step]
+    def get_step_content(self, step_number: Union[str, int]) -> dict:
+        return self.__steps[str(step_number)]
 
-    def update_active_step_content(self, profile_name: str, content: dict) -> None:
-        assert content["time"] != "0:0:0", "Step should last at least 1 second!"
-        self.__steps[profile_name][self.__active_step] = content
+    def set_step_content(self, step_number: Union[str, int], step: dict) -> None:
+        assert step["time"] != "0:0:0", "Step should last at least 1 second!"
+        self.__steps[str(step_number)] = step
 
-    def create_step(self, profile_name: str) -> None:
-        steps = self.sequence(profile_name)
-        next_number = len(steps) + 1
-        self.__active_step = str(next_number)
-        self.__steps[profile_name][self.__active_step] = {}
+    def get_active_step_content(self) -> dict:
+        return self.__steps[self.__active_step_number]
+
+    def set_active_step_content(self, step: dict) -> None:
+        assert step["time"] != "0:0:0", "Step should last at least 1 second!"
+        self.__steps[self.__active_step_number] = step
 
     def is_step_active(self) -> bool:
-        return bool(self.__active_step)
+        return bool(self.__active_step_number)
 
-    def get_step(self, profile_name: str, step: str) -> dict:
-        return self.__steps[profile_name][step]
+    def create_step(self, step_number: Union[str, int]) -> None:
+        self.__steps[str(step_number)] = {}
 
-    def get_active_step_content(self, profile_name: str) -> dict:
-        return self.__steps[profile_name][self.__active_step]
+    def delete_step(self, step: str) -> None:
+        del self.__steps[step]
 
-    def delete_step(self, profile_name: str, step: str) -> None:
-        del self.__steps[profile_name][step]
-
-    def reset_numbers(self, profile_name: str) -> None:
-        steps = list(self.__steps[profile_name].values())
+    def reset_numbers(self) -> None:
+        steps = list(self.__steps.values())
         temp_dict = {}
 
         for index in range(len(steps)):
             temp_dict[str(index + 1)] = steps[index]
 
-        self.__steps[profile_name] = temp_dict
+        self.__steps = temp_dict
 
-    def select_step(self, step: str) -> None:
-        self.__active_step = step
-
-    def sequence(self, profile_name: str) -> list:
-        steps = list(self.__steps[profile_name].keys())
+    def list_steps(self) -> list:
+        steps = list(self.__steps.keys())
         return sorted(steps)
 
-    def last_step_number(self, profile_name: str) -> str:
-        steps = self.sequence(profile_name)[::-1]
-        last_step = next(iter(steps), "")
-        return last_step
+    def last_step(self) -> Optional[str]:
+        try:
+            steps = list(self.__steps.keys())
+            return steps[-1]
+        except:
+            return None

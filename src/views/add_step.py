@@ -6,6 +6,7 @@ from src.components.custom_frame import CustomFrame
 from src.components.custom_top_level import CustomTopLevel
 from src.components.time_input import TimeInput
 from src.types.axis_direction import AxisDirection
+from src.types.profile_struct import ProfileStruct
 from src.types.step_struct import StepStruct
 from src.utils.settings import Settings
 from src.utils.utility_functions import UtilityFunctions
@@ -21,17 +22,17 @@ class AddStep:
         self.__render(master, combobox)
 
     def __render(self, master: CTk, combobox: CustomComboBox) -> None:
-        active_profile = self.__settings.profiles_manager.get_active_profile()
-        self.__settings.steps_manager.create_step(active_profile)
-        active_step = self.__settings.steps_manager.get_active_step()
+        active_profile = self.__settings.profiles_manager.get_active_profile_name()
+        new_step_number = str(
+            (int(self.__settings.steps_manager.last_step()) or 0) + 1)
         combobox.configure(
-            values=self.__settings.steps_manager.sequence(active_profile))
-        combobox.set(self.__settings.steps_manager.get_active_step())
+            values=self.__settings.steps_manager.list_steps())
+        combobox.set(new_step_number)
         vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
 
         window = CustomTopLevel(
             master=master,
-            title=f"Profil: {active_profile} - Krok: {active_step}",
+            title=f"Profil: {active_profile} - Krok: {new_step_number}",
             geometry="320x300",
         )
         frame = CustomFrame(master=window)
@@ -86,12 +87,20 @@ class AddStep:
             master=frame,
             text="Zapisz",
             command=lambda: (
-                self.__settings.steps_manager.update_active_step_content(
-                    profile_name=active_profile,
-                    content=StepStruct(
+                self.__settings.steps_manager.create_step(new_step_number),
+                self.__settings.steps_manager.set_step_content(
+                    step_number=new_step_number,
+                    step=StepStruct(
                         speed=self.__speed.get(),
                         time=str(time_input),
                         direction=direction_combobox.get(),
+                    ).to_dict()
+                ),
+                self.__settings.steps_manager.set_active_step_number(
+                    new_step_number),
+                self.__settings.save_profile_settings(
+                    ProfileStruct(
+                        self.__settings.steps_manager.get_steps()
                     ).to_dict()
                 ),
                 UtilityFunctions.close_window(master=window),

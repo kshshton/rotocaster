@@ -3,6 +3,7 @@ from customtkinter import CTk, CTkButton, CTkEntry, CTkLabel
 from src.components.custom_combobox import CustomComboBox
 from src.components.custom_frame import CustomFrame
 from src.components.custom_top_level import CustomTopLevel
+from src.types.profile_struct import ProfileStruct
 from src.utils.settings import Settings
 from src.utils.utility_functions import UtilityFunctions
 from src.utils.vertical_position import VerticalPosition
@@ -19,7 +20,7 @@ class AddProfile:
     def __add_profile(self, profile_name: str, combobox: CustomComboBox) -> None:
         assert profile_name != "", "Profile can't be empty!"
         self.__settings.profiles_manager.create_profile(profile_name)
-        self.__settings.profiles_manager.set_active_profile(profile_name)
+        self.__settings.profiles_manager.set_active_profile_name(profile_name)
         combobox.configure(
             values=self.__settings.profiles_manager.list_profiles())
         combobox.set(profile_name)
@@ -48,6 +49,11 @@ class AddProfile:
                 self.__add_profile(
                     profile_name=entry_box.get(),
                     combobox=combobox,
+                ),
+                self.__settings.save_profile_settings(
+                    ProfileStruct(
+                        self.__settings.steps_manager.get_steps()
+                    ).to_dict()
                 ),
                 UtilityFunctions.close_window(master=window),
             )

@@ -40,7 +40,7 @@ class RunProfile:
 
         self.__window = CustomTopLevel(
             master=master,
-            title=f"Uruchomiono: {self.__settings.profiles_manager.get_active_profile()}",
+            title=f"Uruchomiono: {self.__settings.profiles_manager.get_active_profile_name()}",
             geometry="300x100",
             close_window_button_blocked=True
         )

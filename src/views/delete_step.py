@@ -8,17 +8,17 @@ class DeleteStep:
         self.__render(combobox)
 
     def __render(self, combobox: CustomComboBox) -> None:
-        try:
-            assert self.__settings.steps_manager.is_step_active()
-            active_step = self.__settings.steps_manager.get_active_step()
-            active_profile_name = self.__settings.profiles_manager.get_active_profile()
-            self.__settings.steps_manager.delete_step(
-                profile_name=active_profile_name, step=active_step)
-            self.__settings.steps_manager.reset_numbers(
-                profile_name=active_profile_name)
-            combobox.configure(values=self.__settings.steps_manager.sequence(
-                profile_name=active_profile_name))
-            combobox.set(self.__settings.steps_manager.last_step_number(
-                profile_name=active_profile_name))
-        except AssertionError:
-            pass
+        assert self.__settings.steps_manager.is_step_active(), "There are no steps to delete!"
+        self.__settings.steps_manager.delete_active_step()
+        self.__settings.steps_manager.reset_numbers()
+        current_steps = self.__settings.steps_manager.get_steps()
+        self.__settings.profiles_manager.set_active_profile_steps(
+            current_steps)
+        self.__settings.profiles_file.update(
+            self.__settings.profiles_manager.get_profiles())
+        combobox.configure(
+            values=self.__settings.steps_manager.list_steps()
+        )
+        previous_step = self.__settings.steps_manager.last_step() or ""
+        combobox.set(previous_step)
+        self.__settings.steps_manager.set_active_step_number(previous_step)

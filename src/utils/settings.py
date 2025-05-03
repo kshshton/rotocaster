@@ -2,7 +2,6 @@
 from customtkinter import CTkToplevel
 
 from src.controllers.engine import Engine
-from src.types.profile_struct import ProfileStruct
 from src.utils.profiles_file import ProfilesFile
 from src.utils.profiles_manager import ProfilesManager
 from src.utils.steps_manager import StepsManager
@@ -17,8 +16,10 @@ class Settings:
         self.profiles_manager.set_profiles(self.profiles_file.load())
         self.engine = Engine()
 
-    def save_profile_settings(self, profile: dict) -> None:
-        self.profiles_manager.set_active_profile_steps(profile)
+    def save_profile_settings(self, profile_content: dict) -> None:
+        active_profile = self.profiles_manager.get_active_profile_name()
+        self.profiles_manager.set_profile_steps(
+            active_profile, profile_content)
         self.profiles_file.update(self.profiles_manager.get_profiles())
 
     def close_window_and_reset_speed(self, master: CTkToplevel) -> None:

@@ -9,7 +9,7 @@ from src.utils.settings import Settings
 from src.utils.utility_functions import UtilityFunctions
 from src.views.add_profile import AddProfile
 from src.views.delete_profile import DeleteProfile
-from src.views.manage_steps import ManageSteps
+from src.views.edit_profile import EditProfile
 from src.views.run_profile import RunProfile
 from src.views.select_direction import SelectDirection
 
@@ -24,19 +24,22 @@ class App(CTk):
         self.__label = CTkLabel(self, text="Profil: ")
         self.__label.place(relx=0.16, rely=0.08, anchor="center")
 
+        first_profile = self.__settings.profiles_manager.first_profile() or ""
+        self.__settings.profiles_manager.set_active_profile_name(first_profile)
+
         self.__combobox = CustomComboBox(
             master=self,
             state="readonly",
             values=self.__settings.profiles_manager.list_profiles(),
-            content=self.__settings.profiles_manager.first_profile(),
-            callback=lambda name: self.__settings.profiles_manager.set_active_profile(
+            content=first_profile,
+            callback=lambda name: self.__settings.profiles_manager.set_active_profile_name(
                 name
             ),
         )
 
-        CustomButton(master=self, text="Zarządzaj krokami", callback=lambda: ManageSteps(
-            master=self, combobox=self.__combobox, settings=self.__settings))
         CustomButton(master=self, text="Dodaj profil", callback=lambda: AddProfile(
+            master=self, combobox=self.__combobox, settings=self.__settings))
+        CustomButton(master=self, text="Edytuj profil", callback=lambda: EditProfile(
             master=self, combobox=self.__combobox, settings=self.__settings))
         CustomButton(master=self, text="Usuń profil", callback=lambda: DeleteProfile(
             combobox=self.__combobox, settings=self.__settings))
