@@ -8,26 +8,26 @@ from src.components.time_input import TimeInput
 from src.types.axis_direction import AxisDirection
 from src.types.profile_struct import ProfileStruct
 from src.types.step_struct import StepStruct
-from src.utils.settings import Settings
+from src.utils.context import Context
 from src.utils.utility_functions import UtilityFunctions
 from src.utils.vertical_position import VerticalPosition
 
 
 class AddStep:
-    def __init__(self, master: CTk, settings: Settings, combobox: CustomComboBox) -> None:
-        self.__settings = settings
+    def __init__(self, master: CTk, context: Context, combobox: CustomComboBox) -> None:
+        self.__context = context
         self.__relx: float = 0.5
         self.__rely: float = 0.1
         self.__rely_padding: float = 0.18
         self.__render(master, combobox)
 
     def __render(self, master: CTk, combobox: CustomComboBox) -> None:
-        active_profile = self.__settings.profiles_manager.get_active_profile_name()
+        active_profile = self.__context.profiles_manager.get_active_profile_name()
         new_step_number = str(
-            int(self.__settings.steps_manager.last_step() or 0) + 1
+            int(self.__context.steps_manager.last_step() or 0) + 1
         )
         combobox.configure(
-            values=self.__settings.steps_manager.list_steps())
+            values=self.__context.steps_manager.list_steps())
         combobox.set(new_step_number)
         vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
 
@@ -88,8 +88,8 @@ class AddStep:
             master=frame,
             text="Zapisz",
             command=lambda: (
-                self.__settings.steps_manager.create_step(new_step_number),
-                self.__settings.steps_manager.set_step_content(
+                self.__context.steps_manager.create_step(new_step_number),
+                self.__context.steps_manager.set_step_content(
                     step_number=new_step_number,
                     step=StepStruct(
                         speed=self.__speed.get(),
@@ -97,11 +97,11 @@ class AddStep:
                         direction=direction_combobox.get(),
                     ).to_dict()
                 ),
-                self.__settings.steps_manager.set_active_step_number(
+                self.__context.steps_manager.set_active_step_number(
                     new_step_number),
-                self.__settings.save_profile_settings(
+                self.__context.save_profile_context(
                     ProfileStruct(
-                        self.__settings.steps_manager.get_steps()
+                        self.__context.steps_manager.get_steps()
                     ).to_dict()
                 ),
                 UtilityFunctions.close_window(master=window),

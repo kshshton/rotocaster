@@ -3,18 +3,18 @@ from customtkinter import CTk, CTkButton, CTkLabel
 from src.components.custom_top_level import CustomTopLevel
 from src.controllers.queue import Queue
 from src.controllers.timer import Timer
-from src.utils.settings import Settings
+from src.utils.context import Context
 from src.utils.utility_functions import UtilityFunctions
 
 
 class RunProfile:
-    def __init__(self, master: CTk, settings: Settings) -> None:
+    def __init__(self, master: CTk, context: Context) -> None:
         self.__master = master
-        self.__settings = settings
+        self.__context = context
         self.__window = None
         self.__queue = Queue(
             master=self.__master,
-            settings=self.__settings
+            context=self.__context
         )
         self.__timer = next(self.__queue)
         self.__timer.on_complete = lambda: self.__on_complete()
@@ -30,7 +30,7 @@ class RunProfile:
             timer.on_complete = lambda: self.__on_complete()
             self.__render(self.__master, timer=timer)
         except:
-            self.__settings.close_window_and_reset_speed(master=self.__window)
+            self.__context.close_window_and_reset_speed(master=self.__window)
             if self.__sound:
                 UtilityFunctions.sound_effect()
 
@@ -40,7 +40,7 @@ class RunProfile:
 
         self.__window = CustomTopLevel(
             master=master,
-            title=f"Uruchomiono: {self.__settings.profiles_manager.get_active_profile_name()}",
+            title=f"Uruchomiono: {self.__context.profiles_manager.get_active_profile_name()}",
             geometry="300x100",
             close_window_button_blocked=True
         )
@@ -55,7 +55,7 @@ class RunProfile:
             command=lambda: (
                 timer.stop(),
                 self.__queue.stop(),
-                self.__settings.close_window_and_reset_speed(self.__window),
+                self.__context.close_window_and_reset_speed(self.__window),
                 self.__turn_off_sound_effect(),
             )
         )

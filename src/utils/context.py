@@ -8,7 +8,7 @@ from src.utils.steps_manager import StepsManager
 from src.utils.utility_functions import UtilityFunctions
 
 
-class Settings:
+class Context:
     def __init__(self) -> None:
         self.profiles_file = ProfilesFile(filename="profiles")
         self.profiles_manager = ProfilesManager()
@@ -16,7 +16,7 @@ class Settings:
         self.profiles_manager.set_profiles(self.profiles_file.load())
         self.engine = Engine()
 
-    def save_profile_settings(self, profile_content: dict) -> None:
+    def save_profile_context(self, profile_content: dict) -> None:
         active_profile = self.profiles_manager.get_active_profile_name()
         self.profiles_manager.set_profile_steps(
             active_profile, profile_content)

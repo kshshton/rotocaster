@@ -5,7 +5,7 @@ from src.components.custom_combobox import CustomComboBox
 from src.components.custom_frame import CustomFrame
 from src.components.custom_top_level import CustomTopLevel
 from src.types.profile_struct import ProfileStruct
-from src.utils.settings import Settings
+from src.utils.context import Context
 from src.utils.utility_functions import UtilityFunctions
 from src.utils.vertical_position import VerticalPosition
 from src.views.add_step import AddStep
@@ -14,8 +14,8 @@ from src.views.edit_step import EditStep
 
 
 class EditProfile:
-    def __init__(self, master: CTk, combobox: CustomComboBox, settings: Settings) -> None:
-        self.__settings = settings
+    def __init__(self, master: CTk, combobox: CustomComboBox, context: Context) -> None:
+        self.__context = context
         self.__relx: float = 0.5
         self.__rely: float = 0
         self.__rely_padding: float = 0.15
@@ -24,30 +24,30 @@ class EditProfile:
     def __update_profile_name(self, entry_box_value: str, combobox: CustomComboBox):
         if entry_box_value == "":
             return
-        active_profile = self.__settings.profiles_manager.get_active_profile_name()
-        profiles = self.__settings.profiles_manager.list_profiles()
+        active_profile = self.__context.profiles_manager.get_active_profile_name()
+        profiles = self.__context.profiles_manager.list_profiles()
         assert entry_box_value != active_profile, "Profile name is the same!"
         assert entry_box_value not in profiles, "Profile name already exist!"
-        self.__settings.profiles_manager.rename_profile(
+        self.__context.profiles_manager.rename_profile(
             original_name=active_profile,
             new_name=entry_box_value,
         )
-        self.__settings.profiles_manager.set_active_profile_name(
+        self.__context.profiles_manager.set_active_profile_name(
             entry_box_value
         )
         combobox.configure(
-            values=self.__settings.profiles_manager.list_profiles()
+            values=self.__context.profiles_manager.list_profiles()
         )
         combobox.set(entry_box_value)
 
     def __render(self, master: CTk, combobox: CustomComboBox) -> None:
-        assert self.__settings.profiles_manager.get_active_profile_name(
+        assert self.__context.profiles_manager.get_active_profile_name(
         ), "There are no profiles to edit!"
-        active_profile = self.__settings.profiles_manager.get_active_profile_name()
-        active_profile_steps = self.__settings.profiles_manager.get_active_profile_steps()
-        self.__settings.steps_manager.set_steps(active_profile_steps)
-        last_step = self.__settings.steps_manager.last_step()
-        self.__settings.steps_manager.set_active_step_number(last_step)
+        active_profile = self.__context.profiles_manager.get_active_profile_name()
+        active_profile_steps = self.__context.profiles_manager.get_active_profile_steps()
+        self.__context.steps_manager.set_steps(active_profile_steps)
+        last_step = self.__context.steps_manager.last_step()
+        self.__context.steps_manager.set_active_step_number(last_step)
         vertical_position = VerticalPosition(
             self.__rely,
             self.__rely_padding
@@ -80,8 +80,8 @@ class EditProfile:
         steps_combobox = CustomComboBox(
             master=frame,
             state="readonly",
-            values=self.__settings.steps_manager.list_steps(),
-            callback=lambda step_number: self.__settings.steps_manager.set_active_step_number(
+            values=self.__context.steps_manager.list_steps(),
+            callback=lambda step_number: self.__context.steps_manager.set_active_step_number(
                 step_number),
             content=last_step,
         )
@@ -92,7 +92,7 @@ class EditProfile:
             master=frame,
             text="+",
             callback=lambda: AddStep(
-                master=window, settings=self.__settings, combobox=steps_combobox
+                master=window, context=self.__context, combobox=steps_combobox
             ),
         )
         add_button.place(relx=self.__relx, rely=next(
@@ -102,7 +102,7 @@ class EditProfile:
             master=frame,
             text="Edytuj",
             callback=lambda: EditStep(
-                master=window, settings=self.__settings),
+                master=window, context=self.__context),
         )
         edit_button.place(relx=self.__relx, rely=next(
             vertical_position), anchor="center")
@@ -111,7 +111,7 @@ class EditProfile:
             master=frame,
             text="Usuń",
             callback=lambda: DeleteStep(
-                settings=self.__settings, combobox=steps_combobox),
+                context=self.__context, combobox=steps_combobox),
         )
         delete_button.place(relx=self.__relx, rely=next(
             vertical_position), anchor="center")
@@ -122,9 +122,9 @@ class EditProfile:
             callback=lambda: (
                 self.__update_profile_name(
                     entry_box_value=profile_entry_box.get(), combobox=combobox),
-                self.__settings.save_profile_settings(
+                self.__context.save_profile_context(
                     ProfileStruct(
-                        self.__settings.steps_manager.get_steps()
+                        self.__context.steps_manager.get_steps()
                     ).to_dict()
                 ),
                 UtilityFunctions.close_window(master=window),

@@ -7,25 +7,25 @@ from src.components.time_input import TimeInput
 from src.types.axis_direction import AxisDirection
 from src.types.profile_struct import ProfileStruct
 from src.types.step_struct import StepStruct
-from src.utils.settings import Settings
+from src.utils.context import Context
 from src.utils.utility_functions import UtilityFunctions
 from src.utils.vertical_position import VerticalPosition
 
 
 class EditStep:
-    def __init__(self, master: CTk, settings: Settings) -> None:
-        self.__settings = settings
+    def __init__(self, master: CTk, context: Context) -> None:
+        self.__context = context
         self.__relx: float = 0.5
         self.__rely: float = 0.1
         self.__rely_padding: float = 0.2
         self.__render(master)
 
     def __render(self, master: CTk) -> None:
-        assert self.__settings.steps_manager.is_step_active(), "There are no steps to edit!"
-        active_profile = self.__settings.profiles_manager.get_active_profile_name()
-        active_step = self.__settings.steps_manager.get_active_step_number()
-        step_content = self.__settings.steps_manager.get_active_step_content()
-        self.__settings.engine.current_profile_speed = step_content.get(
+        assert self.__context.steps_manager.is_step_active(), "There are no steps to edit!"
+        active_profile = self.__context.profiles_manager.get_active_profile_name()
+        active_step = self.__context.steps_manager.get_active_step_number()
+        step_content = self.__context.steps_manager.get_active_step_content()
+        self.__context.engine.current_profile_speed = step_content.get(
             "speed", 0)
         vertical_position = VerticalPosition(
             self.__rely, self.__rely_padding)
@@ -91,16 +91,16 @@ class EditStep:
             master=frame,
             text="Zapisz",
             command=lambda: (
-                self.__settings.steps_manager.set_active_step_content(
+                self.__context.steps_manager.set_active_step_content(
                     step=StepStruct(
                         speed=self.__speed.get(),
                         time=str(time_input),
                         direction=direction_combobox.get(),
                     ).to_dict()
                 ),
-                self.__settings.save_profile_settings(
+                self.__context.save_profile_context(
                     ProfileStruct(
-                        self.__settings.steps_manager.get_steps()
+                        self.__context.steps_manager.get_steps()
                     ).to_dict()
                 ),
                 UtilityFunctions.close_window(master=window),

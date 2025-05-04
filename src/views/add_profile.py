@@ -4,14 +4,14 @@ from src.components.custom_combobox import CustomComboBox
 from src.components.custom_frame import CustomFrame
 from src.components.custom_top_level import CustomTopLevel
 from src.types.profile_struct import ProfileStruct
-from src.utils.settings import Settings
+from src.utils.context import Context
 from src.utils.utility_functions import UtilityFunctions
 from src.utils.vertical_position import VerticalPosition
 
 
 class AddProfile:
-    def __init__(self, master: CTk, combobox: CustomComboBox, settings: Settings) -> None:
-        self.__settings = settings
+    def __init__(self, master: CTk, combobox: CustomComboBox, context: Context) -> None:
+        self.__context = context
         self.__relx: float = 0.5
         self.__rely: float = 0
         self.__rely_padding: float = 0.275
@@ -19,10 +19,10 @@ class AddProfile:
 
     def __add_profile(self, profile_name: str, combobox: CustomComboBox) -> None:
         assert profile_name != "", "Profile can't be empty!"
-        self.__settings.profiles_manager.create_profile(profile_name)
-        self.__settings.profiles_manager.set_active_profile_name(profile_name)
+        self.__context.profiles_manager.create_profile(profile_name)
+        self.__context.profiles_manager.set_active_profile_name(profile_name)
         combobox.configure(
-            values=self.__settings.profiles_manager.list_profiles())
+            values=self.__context.profiles_manager.list_profiles())
         combobox.set(profile_name)
 
     def __render(self, master: CTk, combobox: CustomComboBox) -> None:
@@ -50,9 +50,9 @@ class AddProfile:
                     profile_name=entry_box.get(),
                     combobox=combobox,
                 ),
-                self.__settings.save_profile_settings(
+                self.__context.save_profile_context(
                     ProfileStruct(
-                        self.__settings.steps_manager.get_steps()
+                        self.__context.steps_manager.get_steps()
                     ).to_dict()
                 ),
                 UtilityFunctions.close_window(master=window),

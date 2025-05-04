@@ -4,21 +4,21 @@ from customtkinter import (CTk, CTkButton, CTkEntry, CTkLabel, CTkSlider,
 from src.components.custom_frame import CustomFrame
 from src.components.custom_top_level import CustomTopLevel
 from src.controllers.stopwatch import Stopwatch
-from src.utils.settings import Settings
+from src.utils.context import Context
 from src.utils.utility_functions import UtilityFunctions
 from src.utils.vertical_position import VerticalPosition
 
 
 class RunManualMode:
-    def __init__(self, master: CTk, settings: Settings) -> None:
-        self.__settings = settings
+    def __init__(self, master: CTk, context: Context) -> None:
+        self.__context = context
         self.__relx: float = 0.5
         self.__rely: float = 0
         self.__rely_padding: float = 0.21
         self.__render(master)
 
     def __manual_to_output_speed(self, *args: any) -> None:
-        self.__settings.engine.speed = self.__manual_speed.get()
+        self.__context.engine.speed = self.__manual_speed.get()
 
     def __render(self, master) -> None:
         window = CustomTopLevel(
@@ -76,10 +76,10 @@ class RunManualMode:
             text="Zatrzymaj",
             command=lambda: (
                 timer.stop(),
-                self.__settings.close_window_and_reset_speed(window)
+                self.__context.close_window_and_reset_speed(window)
             )
         )
         stop_button.place(relx=self.__relx, rely=next(
             vertical_position), anchor="center")
 
-        self.__settings.engine.speed = self.__manual_speed.get()
+        self.__context.engine.speed = self.__manual_speed.get()
