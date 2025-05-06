@@ -1,4 +1,3 @@
-import json
 from threading import Thread
 
 from customtkinter import CTk, CTkLabel
@@ -12,6 +11,7 @@ from src.views.delete_profile import DeleteProfile
 from src.views.edit_profile import EditProfile
 from src.views.run_profile import RunProfile
 from src.views.select_direction import SelectDirection
+from src.views.settings import Settings
 
 
 class App(CTk):
@@ -47,8 +47,8 @@ class App(CTk):
             master=self, context=self.__context))
         CustomButton(master=self, text="Uruchom tryb ręczny", callback=lambda: SelectDirection(
             master=self, context=self.__context))
-        CustomButton(master=self, text="Zaktualizuj połączenie",
-                     callback=lambda: self.update_connetion_context())
+        CustomButton(master=self, text="Ustawienia",
+                     callback=lambda: Settings(master=self))
 
         self.stream_output_to_board()
         self.mainloop()
@@ -60,14 +60,6 @@ class App(CTk):
             message = f"engine:{engine.direction};{engine.speed}"
             UtilityFunctions.send_message_to_board(message)
             engine.event.wait(engine.delay)
-
-    def update_connetion_context(self) -> None:
-        with open(f"settings.json", "r") as file:
-            self.config = json.load(file)
-        self.pins = self.config["pins"]
-        self.ports = self.config["ports"]
-        message = f"settings:STBY={self.pins['STBY']};AIN1={self.pins['AIN1']};AIN2={self.pins['AIN2']};PWMA={self.pins['PWMA']}"
-        UtilityFunctions.send_message_to_board(message)
 
     def stream_output_to_board(self) -> None:
         thread = Thread(target=self.__engine_daemon)

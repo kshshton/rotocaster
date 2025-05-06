@@ -46,6 +46,7 @@ while True:
     command, value = message.split(":")
 
     if command == "settings":
+        print(value)
         pairs = [declaration.split('=') for declaration in value.split(';')]
         for pair in pairs:
             name, value = pair

@@ -1,3 +1,4 @@
+import json
 import logging
 import socket
 import winsound
@@ -44,12 +45,20 @@ class UtilityFunctions:
 
     @staticmethod
     def send_message_to_board(message: str) -> None:
-        pico_ip = '192.168.4.1'  # The IP address of the Access Point
-        port = 12345
+        """
+        message: string sent on microcontroller
+        pico_ip: IP Address of Access Point
+        port: Port of Access Point
+        """
+        with open("settings.json", "r") as file:
+            config = json.load(file)
+            access_point = config["accessPoint"]
         try:
             # Create a UDP socket
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-                s.sendto(message.encode('utf-8'), (pico_ip, port))
-                logging.info(f"Sent {message} message to Pico W at {pico_ip}")
+                s.sendto(message.encode('utf-8'),
+                         (access_point["address"], access_point["port"]))
+                logging.info(
+                    f"Sent {message} message to Pico W at {access_point["address"]}")
         except Exception as e:
             logging.error(f"Error: {e}")
