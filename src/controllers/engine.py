@@ -28,7 +28,7 @@ class Engine(CTk):
     def __increment_to_current_profile_value(self) -> None:
         if self.speed == self.current_profile_speed or self.__stop:
             return self.speed
-        elif self.current_profile_speed - self.speed > self.current_profile_speed // 2:
+        elif self.current_profile_speed - self.speed > self.current_profile_speed // 3:
             self.speed += int(self.current_profile_speed * 0.1)
         else:
             self.speed += 1
@@ -38,7 +38,7 @@ class Engine(CTk):
     def __decrement_to_current_profile_value(self) -> None:
         if self.speed == self.current_profile_speed or self.__stop:
             return self.speed
-        elif self.speed - self.current_profile_speed > self.current_profile_speed // 2:
+        elif self.speed - self.current_profile_speed > self.current_profile_speed // 3:
             self.speed -= int(self.current_profile_speed * 0.1)
         else:
             self.speed -= 1
