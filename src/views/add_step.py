@@ -26,8 +26,6 @@ class AddStep:
         new_step_number = str(
             int(self.__context.steps_manager.last_step() or 0) + 1
         )
-        combobox.configure(
-            values=self.__context.steps_manager.list_steps())
         combobox.set(new_step_number)
         vertical_position = VerticalPosition(self.__rely, self.__rely_padding)
 
@@ -89,21 +87,22 @@ class AddStep:
             text="Zapisz",
             command=lambda: (
                 self.__context.steps_manager.create_step(new_step_number),
-                self.__context.steps_manager.set_step_content(
-                    step_number=new_step_number,
+                self.__context.steps_manager.set_active_step_number(
+                    new_step_number),
+                self.__context.steps_manager.set_active_step_content(
                     step=StepStruct(
                         speed=self.__speed.get(),
                         time=str(time_input),
                         direction=direction_combobox.get(),
                     ).to_dict()
                 ),
-                self.__context.steps_manager.set_active_step_number(
-                    new_step_number),
                 self.__context.save_profile_context(
                     ProfileStruct(
                         self.__context.steps_manager.get_steps()
                     ).to_dict()
                 ),
+                combobox.configure(
+                    values=self.__context.steps_manager.list_steps()),
                 UtilityFunctions.close_window(master=window),
             )
         )
