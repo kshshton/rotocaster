@@ -57,8 +57,9 @@ class StepsManager:
         self.__steps = temp_dict
 
     def list_steps(self) -> list:
-        steps = list(self.__steps.keys())
-        return sorted(steps)
+        steps = list(int(key) for key in self.__steps.keys())
+        steps = sorted(steps)
+        return [str(step) for step in steps]
 
     def last_step(self) -> Optional[str]:
         try:
