@@ -46,7 +46,7 @@ class RunProfile:
         )
         UtilityFunctions.center_window(master=self.__window)
 
-        time_label = CTkLabel(master=self.__window)
+        time_label = CTkLabel(master=self.__window, width=270)
         time_label.place(relx=0.025, rely=0)
 
         stop_button = CTkButton(

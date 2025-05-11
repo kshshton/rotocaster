@@ -7,7 +7,8 @@ from customtkinter import CTk
 class Timer:
     def __init__(self, master: CTk, start_time: str) -> None:
         hours, minutes, seconds = [int(num) for num in start_time.split(":")]
-        self.start_time: timedelta = timedelta(hours=hours, minutes=minutes, seconds=seconds)
+        self.start_time: timedelta = timedelta(
+            hours=hours, minutes=minutes, seconds=seconds)
         self.current_time: timedelta = self.start_time
         self.next: bool = False
         self.__master = master
@@ -24,10 +25,16 @@ class Timer:
     def __time_countdown(self) -> None:
         while self.current_time.total_seconds() > 0:
             if self.update_time:
-                self.__master.after(0, self.update_time, self.__formatted_time())
+                self.__master.after(
+                    0,
+                    self.update_time,
+                    self.__formatted_time()
+                )
             self.__event.wait(1)
             self.current_time -= timedelta(seconds=1)
         else:
+            self.__master.after(0, self.update_time, "Korekcja prędkości...")
+            self.__event.wait(1)
             self.__master.after(0, self.on_complete)
 
     def start(self) -> None:
