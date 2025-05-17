@@ -13,6 +13,7 @@ class Timer:
         self.next: bool = False
         self.__master = master
         self.__event = Event()
+        self.__after_event = None
         self.update_time: callable = None
         self.on_complete: callable = None
 
@@ -23,19 +24,23 @@ class Timer:
         return f"{hours:02}:{minutes:02}:{seconds:02}"
 
     def __time_countdown(self) -> None:
-        while self.current_time.total_seconds() > 0:
-            if self.update_time:
-                self.__master.after(
-                    0,
-                    self.update_time,
-                    self.__formatted_time()
-                )
-            self.__event.wait(1)
-            self.current_time -= timedelta(seconds=1)
-        else:
-            self.__master.after(0, self.update_time, "Korekcja prędkości...")
-            self.__event.wait(1)
-            self.__master.after(0, self.on_complete)
+        try:
+            while self.current_time.total_seconds() > 0:
+                if self.update_time:
+                    self.__after_event = self.__master.after(
+                        0,
+                        self.update_time,
+                        self.__formatted_time()
+                    )
+                self.__event.wait(1)
+                self.current_time -= timedelta(seconds=1)
+            else:
+                self.__after_event = self.__master.after(0, self.update_time,
+                                                         "Korekcja prędkości...")
+                self.__event.wait(1)
+                self.__after_event = self.__master.after(0, self.on_complete)
+        except:
+            self.__master.after_cancel(self.__after_event)
 
     def start(self) -> None:
         thread = Thread(target=self.__time_countdown)

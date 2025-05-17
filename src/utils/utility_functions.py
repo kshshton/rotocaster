@@ -49,6 +49,7 @@ class UtilityFunctions:
         async with async_playwright() as p:
             context = await p.chromium.launch_persistent_context(
                 user_data_dir=UtilityFunctions.__SESSION_FILE,
+                args=["--window-position=0,0"],
                 headless=False
             )
             page = await context.new_page()

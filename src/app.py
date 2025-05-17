@@ -1,5 +1,4 @@
 import asyncio
-from threading import Thread
 
 from customtkinter import CTk, CTkLabel
 
@@ -10,6 +9,7 @@ from src.utils.utility_functions import UtilityFunctions
 from src.views.add_profile import AddProfile
 from src.views.delete_profile import DeleteProfile
 from src.views.edit_profile import EditProfile
+from src.views.exit_app import ExitApp
 from src.views.run_profile import RunProfile
 from src.views.select_direction import SelectDirection
 from src.views.settings import Settings
@@ -27,9 +27,12 @@ class App(CTk):
         self.__context = Context()
         self.__label = CTkLabel(self, text="Profil: ")
         self.__label.place(relx=0.16, rely=0.065, anchor="center")
+        self.protocol("WM_DELETE_WINDOW", self.exit_window)
 
+        self.__active_exit_window: bool = False
         first_profile = self.__context.profiles_manager.first_profile() or ""
-        self.__context.profiles_manager.set_active_profile_name(first_profile)
+        self.__context.profiles_manager.set_active_profile_name(
+            first_profile)
 
         self.__combobox = CustomComboBox(
             master=self,
@@ -56,17 +59,13 @@ class App(CTk):
 
     def run(self):
         asyncio.run(UtilityFunctions.save_whatsapp_session())
-        self.__stream_output_to_board()
+        self.__context.engine.stream_output_to_board()
         self.mainloop()
 
-    def __engine_daemon(self) -> None:
-        engine = self.__context.engine
-        message = None
-        while True:
-            message = f"engine:{engine.direction};{engine.speed}"
-            UtilityFunctions.send_message_to_board(message)
-            engine.event.wait(engine.delay)
+    def exit_window(self):
+        if not self.__active_exit_window:
+            self.__active_exit_window = True
+            ExitApp(master=self, context=self.__context)
 
-    def __stream_output_to_board(self) -> None:
-        thread = Thread(target=self.__engine_daemon)
-        thread.start()
+    def unactivate_exit_window(self):
+        self.__active_exit_window = False

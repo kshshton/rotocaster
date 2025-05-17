@@ -3,6 +3,7 @@ from threading import Event, Thread
 from customtkinter import CTk
 
 from src.types.axis_direction import AxisDirection
+from src.utils.utility_functions import UtilityFunctions
 
 
 class Engine(CTk):
@@ -51,6 +52,14 @@ class Engine(CTk):
         if wait_until_end:
             self.__thread.join()
 
+    def __engine_daemon(self) -> None:
+        message = None
+        while True:
+            message = f"engine:{self.direction};{self.speed}"
+            print(self.speed)
+            UtilityFunctions.send_message_to_board(message)
+            self.event.wait(self.delay)
+
     def increment(self, wait_until_end: bool = False) -> None:
         self.__stop = False
         self.__thread_wrapper(
@@ -71,3 +80,10 @@ class Engine(CTk):
             operation=self.__reset_value,
             wait_until_end=wait_until_end
         )
+
+    def stream_output_to_board(self) -> None:
+        self.__thread_wrapper(operation=self.__engine_daemon)
+
+    def close_event(self) -> None:
+        self.reset(wait_until_end=True)
+        self.event.set()
