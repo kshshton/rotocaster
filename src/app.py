@@ -1,3 +1,4 @@
+import asyncio
 from threading import Thread
 
 from customtkinter import CTk, CTkLabel
@@ -53,6 +54,8 @@ class App(CTk):
         CustomButton(master=self, text="Ustawienia",
                      callback=lambda: Settings(master=self))
 
+    def run(self):
+        asyncio.run(UtilityFunctions.save_whatsapp_session())
         self.__stream_output_to_board()
         self.mainloop()
 

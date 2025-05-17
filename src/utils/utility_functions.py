@@ -1,13 +1,18 @@
+import asyncio
 import json
 import logging
+import os
 import socket
 import winsound
 from tkinter import IntVar, StringVar
 
 from customtkinter import CTk, CTkToplevel
+from playwright.async_api import async_playwright
 
 
 class UtilityFunctions:
+    __SESSION_FILE = "whatsapp.session"
+
     @staticmethod
     def center_window(master: CTk, window_geometry: str) -> None:
         screen_width = master.winfo_screenwidth()
@@ -41,8 +46,36 @@ class UtilityFunctions:
     def close_window(master: CTkToplevel) -> None:
         master.destroy()
 
-    def sound_effect(duration=2000, freq=440) -> None:
-        winsound.Beep(freq, duration)
+    @staticmethod
+    async def save_whatsapp_session():
+        async with async_playwright() as p:
+            context = await p.chromium.launch_persistent_context(
+                user_data_dir=UtilityFunctions.__SESSION_FILE,
+                headless=False
+            )
+            page = await context.new_page()
+            await page.goto('https://web.whatsapp.com')
+            await page.wait_for_selector('div[contenteditable="true"][data-tab="3"]', timeout=60000)
+            await context.close()
+
+    @staticmethod
+    async def send_whatsapp_message():
+        async with async_playwright() as p:
+            context = await p.chromium.launch_persistent_context(
+                user_data_dir=UtilityFunctions.__SESSION_FILE,
+                args=["--window-position=-32000,-32000"],
+                headless=False,
+            )
+            page = context.pages[0] if context.pages else await context.new_page()
+            await page.goto('https://web.whatsapp.com')
+            await page.wait_for_selector('div[contenteditable="true"][data-tab="3"]', timeout=60000)
+            await page.fill('div[contenteditable="true"][data-tab="3"]', "(Ty)")
+            await page.keyboard.press("Enter")
+            await asyncio.sleep(2)
+            await page.fill('div[contenteditable="true"][data-tab="10"]', "Maszyna skończyła pracę!")
+            await page.keyboard.press("Enter")
+            await asyncio.sleep(2)
+            await context.close()
 
     @staticmethod
     def send_message_to_board(message: str) -> None:

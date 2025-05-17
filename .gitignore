@@ -3,3 +3,5 @@ venv
 .vscode
 *.json
 profiles.json
+whatsapp.session
+debug.log

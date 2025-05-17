@@ -16,6 +16,7 @@ class CustomTopLevel(CTkToplevel):
         self.title(title)
         self.transient(master)
         self.geometry(geometry)
+        self.resizable(False, False)
         self.protocol(
             "WM_DELETE_WINDOW",
             lambda: None
