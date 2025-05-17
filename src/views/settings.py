@@ -12,7 +12,7 @@ from src.utils.vertical_position import VerticalPosition
 
 class Settings:
     def __init__(self, master: CTk) -> None:
-        self.__settings_filename: str = "settings.json"
+        self.__settings_filename: str = "data/settings.json"
         self.__relx: float = 0.5
         self.__rely: float = 0
         self.__rely_padding: float = 0.13

@@ -5,3 +5,4 @@ venv
 profiles.json
 whatsapp.session
 debug.log
+data/*

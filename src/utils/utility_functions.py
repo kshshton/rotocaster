@@ -1,9 +1,7 @@
 import asyncio
 import json
 import logging
-import os
 import socket
-import winsound
 from tkinter import IntVar, StringVar
 
 from customtkinter import CTk, CTkToplevel
@@ -84,7 +82,7 @@ class UtilityFunctions:
         pico_ip: IP Address of Access Point
         port: Port of Access Point
         """
-        with open("settings.json", "r") as file:
+        with open("data/settings.json", "r") as file:
             config = json.load(file)
             access_point = config["accessPoint"]
         try:
