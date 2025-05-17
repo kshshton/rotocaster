@@ -20,4 +20,4 @@ class CustomTopLevel(CTkToplevel):
             "WM_DELETE_WINDOW",
             lambda: None
         ) if close_window_button_blocked else None
-        UtilityFunctions.center_window(self)
+        UtilityFunctions.center_window(self, window_geometry=geometry)

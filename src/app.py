@@ -17,12 +17,15 @@ from src.views.settings import Settings
 class App(CTk):
     def __init__(self, title: str) -> None:
         super().__init__()
-        self.geometry("300x350")
+        self.__window_geometry: str = "300x350"
+        self.geometry(self.__window_geometry)
+        self.resizable(False, False)
         self.title(title)
-        UtilityFunctions.center_window(self)
+        UtilityFunctions.center_window(
+            self, window_geometry=self.__window_geometry)
         self.__context = Context()
         self.__label = CTkLabel(self, text="Profil: ")
-        self.__label.place(relx=0.16, rely=0.08, anchor="center")
+        self.__label.place(relx=0.16, rely=0.065, anchor="center")
 
         first_profile = self.__context.profiles_manager.first_profile() or ""
         self.__context.profiles_manager.set_active_profile_name(first_profile)
@@ -50,7 +53,7 @@ class App(CTk):
         CustomButton(master=self, text="Ustawienia",
                      callback=lambda: Settings(master=self))
 
-        self.stream_output_to_board()
+        self.__stream_output_to_board()
         self.mainloop()
 
     def __engine_daemon(self) -> None:
@@ -61,6 +64,6 @@ class App(CTk):
             UtilityFunctions.send_message_to_board(message)
             engine.event.wait(engine.delay)
 
-    def stream_output_to_board(self) -> None:
+    def __stream_output_to_board(self) -> None:
         thread = Thread(target=self.__engine_daemon)
         thread.start()

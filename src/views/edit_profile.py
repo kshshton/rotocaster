@@ -90,7 +90,7 @@ class EditProfile:
 
         add_button = CustomButton(
             master=frame,
-            text="+",
+            text="Dodaj",
             callback=lambda: AddStep(
                 master=window, context=self.__context, combobox=steps_combobox
             ),

@@ -9,12 +9,13 @@ from customtkinter import CTk, CTkToplevel
 
 class UtilityFunctions:
     @staticmethod
-    def center_window(master: CTk) -> None:
+    def center_window(master: CTk, window_geometry: str) -> None:
         screen_width = master.winfo_screenwidth()
         screen_height = master.winfo_screenheight()
 
-        x = int((screen_width - master.winfo_reqwidth()) / 2)
-        y = int((screen_height - master.winfo_reqheight()) / 2)
+        x, y = (int(num) for num in window_geometry.split("x"))
+        x = int((screen_width - master.winfo_reqwidth()) / 2 - x / 4)
+        y = int((screen_height - master.winfo_reqheight()) / 2 - y / 5)
 
         master.geometry(f"+{x}+{y}")
 
