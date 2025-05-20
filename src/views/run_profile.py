@@ -32,7 +32,8 @@ class RunProfile:
             timer.on_complete = lambda: self.__on_complete()
             self.__render(self.__master, timer=timer)
         except:
-            self.__context.close_window_and_reset_speed(master=self.__window)
+            self.__context.engine.reset(wait_until_end=True)
+            UtilityFunctions.close_window(self.__window)
             if self.__alert:
                 asyncio.run(UtilityFunctions.send_whatsapp_message())
 
@@ -56,7 +57,8 @@ class RunProfile:
             command=lambda: (
                 timer.stop(),
                 self.__queue.stop(),
-                self.__context.close_window_and_reset_speed(self.__window),
+                self.__context.engine.reset(wait_until_end=True),
+                UtilityFunctions.close_window(self.__window),
                 self.__turn_off_alert(),
             )
         )

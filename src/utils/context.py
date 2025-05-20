@@ -21,7 +21,3 @@ class Context:
         self.profiles_manager.set_profile_steps(
             active_profile, profile_content)
         self.profiles_file.update(self.profiles_manager.get_profiles())
-
-    def close_window_and_reset_speed(self, master: CTkToplevel) -> None:
-        self.engine.reset(wait_until_end=True)
-        UtilityFunctions.close_window(master)

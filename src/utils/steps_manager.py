@@ -48,7 +48,7 @@ class StepsManager:
         del self.__steps[step]
 
     def reset_numbers(self) -> None:
-        steps = list(self.__steps.values())
+        steps = tuple(self.__steps.values())
         temp_dict = {}
 
         for index in range(len(steps)):
@@ -57,13 +57,13 @@ class StepsManager:
         self.__steps = temp_dict
 
     def list_steps(self) -> list:
-        steps = (int(key) for key in self.__steps.keys())
+        steps = list(int(key) for key in self.__steps.keys())
         steps = sorted(steps)
         return [str(step) for step in steps]
 
     def last_step(self) -> Optional[str]:
         try:
-            steps = list(self.__steps.keys())
+            steps = tuple(self.__steps.keys())
             return steps[-1]
         except:
             return None

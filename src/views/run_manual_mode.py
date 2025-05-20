@@ -76,7 +76,8 @@ class RunManualMode:
             text="Zatrzymaj",
             command=lambda: (
                 timer.stop(),
-                self.__context.close_window_and_reset_speed(window)
+                self.__context.engine.reset(wait_until_end=True),
+                UtilityFunctions.close_window(window),
             )
         )
         stop_button.place(relx=self.__relx, rely=next(
