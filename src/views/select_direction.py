@@ -1,4 +1,4 @@
-from customtkinter import CTk, CTkButton, CTkComboBox, CTkLabel
+from customtkinter import CTk, CTkButton, CTkLabel
 
 from src.components.custom_combobox import CustomComboBox
 from src.components.custom_frame import CustomFrame
