@@ -1,5 +1,3 @@
-import asyncio
-
 from customtkinter import CTk, CTkLabel
 
 from src.components.custom_button import CustomButton

@@ -1,5 +1,3 @@
-import asyncio
-
 from customtkinter import CTk, CTkButton, CTkLabel
 
 from src.components.custom_top_level import CustomTopLevel

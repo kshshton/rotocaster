@@ -4,7 +4,7 @@ import network
 from machine import PWM, Pin
 
 ssid = "Pico_W_AP"
-password = "12345678"
+password = "__ur_password__"
 
 ap = network.WLAN(network.AP_IF)
 ap.config(essid=ssid, password=password)
