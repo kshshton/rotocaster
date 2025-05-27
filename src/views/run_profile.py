@@ -35,7 +35,7 @@ class RunProfile:
             self.__context.engine.reset(wait_until_end=True)
             UtilityFunctions.close_window(self.__window)
             if self.__alert:
-                asyncio.run(UtilityFunctions.send_whatsapp_message())
+                UtilityFunctions.sound_effect()
 
     def __render(self, master, timer: Timer) -> None:
         if self.__window:

@@ -58,7 +58,6 @@ class App(CTk):
                      callback=lambda: Settings(master=self))
 
     def run(self):
-        asyncio.run(UtilityFunctions.save_whatsapp_session())
         self.__context.engine.stream_output_to_board()
         self.mainloop()
 
