@@ -98,7 +98,7 @@ class EditStep:
                         direction=direction_combobox.get(),
                     ).to_dict()
                 ),
-                self.__context.save_profile_context(
+                self.__context.save_profile_to_file(
                     ProfileStruct(
                         self.__context.steps_manager.get_steps()
                     ).to_dict()

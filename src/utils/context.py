@@ -12,7 +12,7 @@ class Context:
         self.profiles_manager.set_profiles(self.profiles_file.load())
         self.engine = Engine()
 
-    def save_profile_context(self, profile_content: dict) -> None:
+    def save_profile_to_file(self, profile_content: dict) -> None:
         active_profile = self.profiles_manager.get_active_profile_name()
         self.profiles_manager.set_profile_steps(
             active_profile, profile_content)

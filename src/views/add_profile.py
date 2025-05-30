@@ -50,7 +50,7 @@ class AddProfile:
                     profile_name=entry_box.get(),
                     combobox=combobox,
                 ),
-                self.__context.save_profile_context(
+                self.__context.save_profile_to_file(
                     ProfileStruct(
                         self.__context.steps_manager.get_steps()
                     ).to_dict()
