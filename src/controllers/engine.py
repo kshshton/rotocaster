@@ -54,7 +54,7 @@ class Engine(CTk):
 
     def __engine_daemon(self) -> None:
         message = None
-        while True:
+        while not self.event.is_set():
             message = f"engine:{self.direction};{self.speed}"
             print(self.speed)
             UtilityFunctions.send_message_to_board(message)
@@ -84,6 +84,6 @@ class Engine(CTk):
     def stream_output_to_board(self) -> None:
         self.__thread_wrapper(operation=self.__engine_daemon)
 
-    def close_event(self) -> None:
+    def turn_off(self) -> None:
         self.reset(wait_until_end=True)
         self.event.set()

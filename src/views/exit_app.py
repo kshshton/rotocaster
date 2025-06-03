@@ -29,7 +29,7 @@ class ExitApp:
             text="Tak",
             width=70,
             command=lambda: (
-                self.__context.engine.close_event(),
+                self.__context.engine.turn_off(),
                 UtilityFunctions.close_window(master=master)
             )
         )
