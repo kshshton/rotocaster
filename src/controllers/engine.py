@@ -1,3 +1,4 @@
+from math import ceil
 from threading import Event, Thread
 
 from customtkinter import CTk
@@ -11,11 +12,12 @@ class Engine(CTk):
         super().__init__()
         self.__stop: bool = False
         self.__thread: Thread = None
-        self.delay: int = 0.1
+        self.delay: float = 0.2
         self.event = Event()
         self.current_profile_speed: int = 0
         self.speed: int = 0
         self.direction: str = AxisDirection.LEFT.value
+        self.acceleration: float = 0
 
     def __reset_value(self) -> None:
         if self.speed == 0:
@@ -27,22 +29,24 @@ class Engine(CTk):
         self.__reset_value()
 
     def __increment_to_current_profile_value(self) -> None:
+        max_acceleration = (self.current_profile_speed * self.delay) / 2
         if self.speed == self.current_profile_speed or self.__stop:
             return self.speed
-        elif self.current_profile_speed - self.speed > self.current_profile_speed // 2:
-            self.speed += int(self.current_profile_speed * 0.1)
-        else:
-            self.speed += 1
+        elif self.speed == 0:
+            self.speed = int(max_acceleration)
+        self.acceleration = max_acceleration * \
+            (1 - self.speed / self.current_profile_speed)
+        self.speed += ceil(self.acceleration)
         self.event.wait(self.delay)
         self.__increment_to_current_profile_value()
 
     def __decrement_to_current_profile_value(self) -> None:
+        max_acceleration = (self.current_profile_speed * self.delay) / 2
         if self.speed == self.current_profile_speed or self.__stop:
             return self.speed
-        elif self.speed - self.current_profile_speed > self.current_profile_speed // 2:
-            self.speed -= int(self.current_profile_speed * 0.1)
-        else:
-            self.speed -= 1
+        self.acceleration = max_acceleration * \
+            (1 - self.speed / self.current_profile_speed)
+        self.speed -= ceil(self.acceleration)
         self.event.wait(self.delay)
         self.__decrement_to_current_profile_value()
 
