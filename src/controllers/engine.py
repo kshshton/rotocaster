@@ -29,24 +29,16 @@ class Engine(CTk):
         self.__reset_value()
 
     def __increment_to_current_profile_value(self) -> None:
-        max_acceleration = (self.current_profile_speed * self.delay) / 2
         if self.speed == self.current_profile_speed or self.__stop:
             return self.speed
-        elif self.speed == 0:
-            self.speed = int(max_acceleration)
-        self.acceleration = max_acceleration * \
-            (1 - self.speed / self.current_profile_speed)
-        self.speed += ceil(self.acceleration)
+        self.speed += self.__count_speed()
         self.event.wait(self.delay)
         self.__increment_to_current_profile_value()
 
     def __decrement_to_current_profile_value(self) -> None:
-        max_acceleration = (self.current_profile_speed * self.delay) / 2
         if self.speed == self.current_profile_speed or self.__stop:
             return self.speed
-        self.acceleration = max_acceleration * \
-            (1 - self.speed / self.current_profile_speed)
-        self.speed -= ceil(self.acceleration)
+        self.speed -= self.__count_speed()
         self.event.wait(self.delay)
         self.__decrement_to_current_profile_value()
 
@@ -63,6 +55,12 @@ class Engine(CTk):
             print(self.speed)
             UtilityFunctions.send_message_to_board(message)
             self.event.wait(self.delay)
+
+    def __count_speed(self) -> int:
+        max_acceleration = (self.current_profile_speed * self.delay) / 2
+        acceleration = abs(max_acceleration *
+                           (1 - self.speed / self.current_profile_speed))
+        return ceil(acceleration)
 
     def increment(self, wait_until_end: bool = False) -> None:
         self.__stop = False
