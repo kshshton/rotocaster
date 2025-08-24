@@ -17,7 +17,6 @@ class Engine(CTk):
         self.current_profile_speed: int = 0
         self.speed: int = 0
         self.direction: str = AxisDirection.LEFT.value
-        self.acceleration: float = 0
 
     def __reset_value(self) -> None:
         if self.speed == 0:
@@ -31,14 +30,14 @@ class Engine(CTk):
     def __increment_to_current_profile_value(self) -> None:
         if self.speed == self.current_profile_speed or self.__stop:
             return self.speed
-        self.speed += self.__count_speed()
+        self.speed += self.__speed_easing()
         self.event.wait(self.delay)
         self.__increment_to_current_profile_value()
 
     def __decrement_to_current_profile_value(self) -> None:
         if self.speed == self.current_profile_speed or self.__stop:
             return self.speed
-        self.speed -= self.__count_speed()
+        self.speed -= self.__speed_easing()
         self.event.wait(self.delay)
         self.__decrement_to_current_profile_value()
 
@@ -56,7 +55,7 @@ class Engine(CTk):
             UtilityFunctions.send_message_to_board(message)
             self.event.wait(self.delay)
 
-    def __count_speed(self) -> int:
+    def __speed_easing(self) -> int:
         max_acceleration = (self.current_profile_speed * self.delay) / 2
         acceleration = abs(max_acceleration *
                            (1 - self.speed / self.current_profile_speed))
