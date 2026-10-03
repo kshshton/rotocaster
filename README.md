@@ -7,10 +7,6 @@ This project focuses on the engine that drives the rotating axis highlighted in 
 ![RotoCaster main image](assets/rotocaster.png)
 > *Image credit: The main image was adapted from https://www.tannereng.com/rotocaster*
 
-## Prototype
-
-<video src="assets/rotocaster.mp4" controls muted playsinline></video>
-
 # Implementation
 
 A Python-based GUI application for managing and executing rotary motion profiles. RotoCaster allows users to create, edit, and run profiles consisting of multiple steps that control rotation speed, duration, and direction.
